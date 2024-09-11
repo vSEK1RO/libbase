@@ -16,6 +16,7 @@ TOOLS =\
 
 TESTS =\
 	test-hex\
+	test-baseN\
 	hash/test-sha256\
 
 ifeq (${origin CC}, default)
@@ -23,7 +24,7 @@ CC = g++
 endif
 CFLAGS = -Wall -Wextra -Werror -Wno-unused-result -fPIC
 ifneq (${DEBUG}, false)
-CFLAGS += -fsanitize=address,undefined -g -Og
+CFLAGS += -fsanitize=address,undefined -g -O0
 -g = -g
 else
 CFLAGS += -O3
