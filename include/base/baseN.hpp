@@ -8,6 +8,14 @@ namespace baseN
 {
     bool isValid(const char *str, const int8_t *map) noexcept;
     bool isValid(const std::string &str, const int8_t *map) noexcept;
-    std::string encode(std::vector<uint8_t> data, uint8_t base, uint64_t enc_size, const char *digits) noexcept;
-    std::vector<uint8_t> decode(const std::string &str, uint8_t base, uint64_t dec_size, const char *digits, const int8_t *map);
+
+    void encode(const uint8_t *data, uint64_t data_size, char *str, uint8_t base, const char *digits, uint64_t enc_size) noexcept;
+    void encode(const uint8_t *data, uint64_t data_size, char *str, uint8_t base, const char *digits) noexcept;
+    std::string encode(std::vector<uint8_t> data, uint8_t base, const char *digits, uint64_t enc_size) noexcept;
+    std::string encode(std::vector<uint8_t> data, uint8_t base, const char *digits) noexcept;
+
+    void decode(const char *str, uint8_t *data, uint64_t data_size, uint8_t base, const char *digits, const char *map, uint64_t dec_size);
+    void decode(const char *str, uint8_t *data, uint64_t data_size, uint8_t base, const char *digits, const char *map);
+    std::vector<uint8_t> decode(const std::string &str, uint8_t base, const char *digits, const char *map, uint64_t dec_size);
+    std::vector<uint8_t> decode(const std::string &str, uint8_t base, const char *digits, const char *map);
 }
