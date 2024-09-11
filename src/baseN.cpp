@@ -4,16 +4,22 @@
 
 namespace baseN
 {
-    bool isValid(const std::string &str, const int8_t *map) noexcept
+    bool isValid(const char *str, const int8_t *map) noexcept
     {
-        for (int64_t i = str.size() - 1; i >= 0; i--)
+        uint8_t i = 0;
+        while (str[i] != '\0')
         {
             if (map[(int8_t)str[i]] == -1)
             {
                 return false;
             }
+            i++;
         }
         return true;
+    }
+    bool isValid(const std::string &str, const int8_t *map) noexcept
+    {
+        return baseN::isValid(str.data(), map);
     }
     std::string encode(std::vector<uint8_t> data, uint8_t base, uint64_t enc_size, const char *digits) noexcept
     {
