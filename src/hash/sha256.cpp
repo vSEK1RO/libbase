@@ -163,7 +163,7 @@ static void sha256_final(SHA256_CTX *ctx, uint8_t *hash)
 
 namespace hash
 {
-	void sha256(const uint8_t *data, uint64_t data_size, const uint8_t *hash) noexcept
+	void sha256(const uint8_t *data, uint64_t data_size, uint8_t *hash) noexcept
 	{
 		SHA256_CTX ctx;
 		sha256_init(&ctx);

@@ -8,6 +8,7 @@ DEBUG ?= false
 
 LIB = base
 OBJS =\
+	hex\
 	baseN\
 	hash/sha256\
 
