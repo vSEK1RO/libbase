@@ -23,7 +23,7 @@ static const int8_t hexmap[] = {
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 };
 
-namespace btc::data
+namespace hex
 {
     bool isValid(const std::string &str) noexcept
     {

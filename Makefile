@@ -15,6 +15,7 @@ OBJS =\
 TOOLS =\
 
 TESTS =\
+	test-hex\
 
 ifeq (${origin CC}, default)
 CC = g++
