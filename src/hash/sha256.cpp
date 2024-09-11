@@ -161,15 +161,19 @@ static void sha256_final(SHA256_CTX *ctx, uint8_t *hash)
 	}	
 }
 
-namespace btc::hash
+namespace hash
 {
-	std::vector<uint8_t> sha256(const std::vector<uint8_t> &data)
+	void sha256(const uint8_t *data, uint64_t data_size, const uint8_t *hash) noexcept
 	{
-		std::vector<uint8_t> hash(SHA256_DIGEST_LENGTH);
 		SHA256_CTX ctx;
 		sha256_init(&ctx);
-		sha256_update(&ctx, data.data(), data.size());
-		sha256_final(&ctx, hash.data());
+		sha256_update(&ctx, data, data_size);
+		sha256_final(&ctx, hash);
+	}
+	std::vector<uint8_t> sha256(const std::vector<uint8_t> &data) noexcept
+	{
+		std::vector<uint8_t> hash(SHA256_DIGEST_LENGTH);
+		sha256(data.data(), data.size(), hash.data());
 		return hash;
 	}
 }
