@@ -16,6 +16,7 @@ TOOLS =\
 
 TESTS =\
 	test-hex\
+	hash/test-sha256\
 
 ifeq (${origin CC}, default)
 CC = g++
