@@ -1,5 +1,6 @@
 #include <stdexcept>
 
+#include <base/baseN.hpp>
 #include <base/hex.hpp>
 
 static const char hexdigits[] = "0123456789abcdef";
@@ -25,38 +26,55 @@ static const int8_t hexmap[] = {
 
 namespace hex
 {
+    bool isValid(const char *str) noexcept
+    {
+        return baseN::isValid(str, hexmap);
+    }
     bool isValid(const std::string &str) noexcept
     {
-        for (int64_t i = str.size() - 1; i >= 0; i--)
+        return baseN::isValid(str, hexmap);
+    }
+    void encode(const uint8_t *data, uint64_t data_size, char *str) noexcept
+    {
+        uint64_t i = 0;
+        while (str[i] != '\0' && i / 2 < data_size)
         {
-            if (hexmap[(int8_t)str[i]] == -1)
+            if (i % 2 == 0)
             {
-                return false;
+                str[i] = hexdigits[data[i / 2] >> 4];
+            } else {
+                str[i] = hexdigits[data[i / 2] & 0x0F];
             }
+            i++;
         }
-        return true;
     }
     std::string encode(const std::vector<uint8_t> &data) noexcept
     {
-        std::string str;
-        for (uint64_t i = 0; i < data.size(); i++)
-        {
-            str.push_back(hexdigits[data[i] >> 4]);
-            str.push_back(hexdigits[data[i] & 0x0F]);
-        }
+        std::string str(data.size() * 2, ' ');
+        hex::encode(data.data(), data.size(), str.data());
         return str;
     }
-    std::vector<uint8_t> decode(const std::string &str)
+    void decode(const char *str, uint8_t *data, uint64_t data_size)
     {
         if (!hex::isValid(str))
         {
             throw std::logic_error("hex::decode: out of digits map");
         }
-        std::vector<uint8_t> data;
-        for (uint64_t i = 0; i < str.size() / 2; i++)
+        uint64_t i = 0;
+        while (i < data_size && str[i * 2] != '\0')
         {
-            data.push_back(hexmap[(int8_t)str[i * 2]] << 4 | hexmap[(int8_t)str[i * 2 + 1]]);
+            if(str[i + 1] == '\0')
+            {
+                throw std::logic_error("hex::decode: isn't hex");
+            }
+            data[i] = hexmap[(int8_t)str[i * 2]] << 4 | hexmap[(int8_t)str[i * 2 + 1]];
+            i++;
         }
+    }
+    std::vector<uint8_t> decode(const std::string &str)
+    {
+        std::vector<uint8_t> data(str.size() / 2);
+        hex::decode(str.data(), data.data(), data.size());
         return data;
     }
 }

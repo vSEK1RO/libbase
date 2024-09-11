@@ -6,7 +6,7 @@ namespace baseN
 {
     bool isValid(const char *str, const int8_t *map) noexcept
     {
-        uint8_t i = 0;
+        uint64_t i = 0;
         while (str[i] != '\0')
         {
             if (map[(int8_t)str[i]] == -1)
