@@ -65,7 +65,7 @@ namespace baseN
         str[idx_str--] = digits[div];
         while (zero_count > 0 && idx_str > 0)
         {
-            str[idx_str--] = '1';
+            str[idx_str--] = digits[0];
             zero_count--;
         }
         str.erase(0, idx_str + 1);
