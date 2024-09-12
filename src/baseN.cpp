@@ -79,10 +79,6 @@ namespace baseN
         }
         std::copy(res_str, res_str + enc_size, str);
     }
-    void encode(const uint8_t *data, uint64_t data_size, char *str, uint8_t base, const char *digits) noexcept
-    {
-        baseN::encode(data, data_size, str, base, digits, data_size * std::log(256) / std::log(base) + 1);
-    }
     std::string encode(std::vector<uint8_t> data, uint8_t base, const char *digits, uint64_t enc_size) noexcept
     {
         std::string str(enc_size, ' ');
@@ -99,51 +95,57 @@ namespace baseN
         return baseN::encode(data, base, digits, data.size() * std::log(256) / std::log(base) + 1);
     }
 
-    // void decode(const char *str, uint8_t *data, uint64_t data_size, uint8_t base, const char *digits, const char *map, uint64_t dec_size)
-    // {
-        // if (str[0] == '\0')
-        // {
-        //     return;
-        // }
-        // if (!baseN::isValid(str, map))
-        // {
-        //     throw std::logic_error("baseN::decode: out of digits map");
-        // }
-        // uint8_t *res_data = new uint8_t[dec_size];
-        // uint64_t idx_str = 0;
-        // int64_t
-        //     zero_count = 0,
-        //     idx_quo = dec_size - 1,
-        //     idx_quo_last = dec_size - 2;
-        // uint16_t div;
+    void decode(const char *str, uint8_t *data, uint64_t data_size, uint8_t base, const char *digits, const int8_t *map, uint64_t dec_size)
+    {
+        if (str[0] == '\0')
+        {
+            return;
+        }
+        if (!baseN::isValid(str, map))
+        {
+            throw std::logic_error("baseN::decode: out of digits map");
+        }
+        uint8_t res_data[dec_size];
+        uint64_t idx_str = 0;
+        int64_t
+            zero_count = 0,
+            idx_quo = dec_size - 1,
+            idx_quo_last = dec_size - 2;
+        uint16_t div;
 
-        // while (str[zero_count] == digits[0])
-        // {
-        //     zero_count++;
-        // }
-        // res_data[idx_quo] = map[(int8_t)str[idx_str++]];
-        // while (idx_str < str.size())
-        // {
-        //     div = map[(int8_t)str[idx_str++]];
-        //     while (idx_quo > idx_quo_last && idx_quo > 0)
-        //     {
-        //         div += data[idx_quo] * base;
-        //         data[idx_quo--] = div;
-        //         div >>= 8;  
-        //     }
-        //     data[idx_quo--] = div;
-        //     idx_quo_last = idx_quo;
-        //     idx_quo = data.size() - 1;
-        // }
-        // idx_quo = 0;
-        // while (data[idx_quo] == 0)
-        // {
-        //     idx_quo++;
-        // }
-        // data.erase(data.begin(), data.begin() + idx_quo - zero_count);
-        // delete[] res_data;
-    // }
-    // void decode(const char *str, uint8_t *data, uint64_t data_size, uint8_t base, const char *digits, const char *map);
-    // std::vector<uint8_t> decode(const std::string &str, uint8_t base, const char *digits, const char *map, uint64_t dec_size);
-       // std::vector<uint8_t> decode(const std::string &str, uint8_t base, const char *digits, const char *map);
+        while (str[zero_count] == digits[0])
+        {
+            zero_count++;
+        }
+        res_data[idx_quo] = map[(int8_t)str[idx_str++]];
+        while (str[idx_str] != '\0')
+        {
+            div = map[(int8_t)str[idx_str++]];
+            while (idx_quo > idx_quo_last && idx_quo > 0)
+            {
+                div += res_data[idx_quo] * base;
+                res_data[idx_quo--] = div;
+                div >>= 8;
+            }
+            res_data[idx_quo--] = div;
+            idx_quo_last = idx_quo;
+            idx_quo = dec_size - 1;
+        }
+        std::copy(res_data, res_data + std::min(dec_size, data_size), data);
+    }
+    std::vector<uint8_t> decode(const std::string &str, uint8_t base, const char *digits, const int8_t *map, uint64_t dec_size)
+    {
+        std::vector<uint8_t> data(dec_size);
+        baseN::decode(str.data(), data.data(), data.size(), base, digits, map, dec_size);
+        data.erase(data.begin(), std::find_if(
+            data.begin(), data.end(), [](uint8_t byte){
+                return byte != 0;
+            })
+        );
+        return data;
+    }
+    std::vector<uint8_t> decode(const std::string &str, uint8_t base, const char *digits, const int8_t *map)
+    {
+        return baseN::decode(str, base, digits, map, str.size() * std::log(base) / std::log(256) + 1);
+    }
 }

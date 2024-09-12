@@ -44,14 +44,14 @@ TEST(baseN, encode)
 //     std::vector<uint8_t> data(1e6);
 //     encode(data);
 // }
-// TEST(baseN, decode)
-// {
-//     EXPECT_EQ(btc::data::hex::encode(decode("Ky")), "044c");
-//     EXPECT_EQ(btc::data::hex::encode(decode("KyK")), "f94a");
-//     EXPECT_EQ(btc::data::hex::encode(decode("KyKX")), "387ae2");
-//     EXPECT_EQ(btc::data::hex::encode(decode("KyKXa")), "0ccbd755");
-//     EXPECT_EQ(btc::data::hex::encode(decode("KyKXaa")), "02e62ec963");
-// }
+TEST(baseN, decode)
+{
+    EXPECT_EQ(hex::encode(decode("Ky", 58, b58digits, b58map)), "044c");
+    EXPECT_EQ(hex::encode(decode("KyK", 58, b58digits, b58map)), "f94a");
+    EXPECT_EQ(hex::encode(decode("KyKX", 58, b58digits, b58map)), "387ae2");
+    EXPECT_EQ(hex::encode(decode("KyKXa", 58, b58digits, b58map)), "0ccbd755");
+    EXPECT_EQ(hex::encode(decode("KyKXaa", 58, b58digits, b58map)), "02e62ec963");
+}
 // TEST(baseN, decode_1e6)
 // {
 //     std::string str(1e6, '0');
