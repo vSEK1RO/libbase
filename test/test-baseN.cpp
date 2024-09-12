@@ -39,10 +39,10 @@ TEST(baseN, encode)
     EXPECT_EQ("KyKXa", encode(hex::decode("0ccbd755"), 58, b58digits));
     EXPECT_EQ("KyKXaa", encode(hex::decode("02e62ec963"), 58, b58digits));
 }
-// TEST(baseN, encode_1e6)
+// TEST(baseN, encode_1e3)
 // {
-//     std::vector<uint8_t> data(1e6);
-//     encode(data);
+//     std::vector<uint8_t> data(1e3);
+//     encode(data, 58, b58digits, data.size() * 138 / 100 + 1);
 // }
 TEST(baseN, decode)
 {
@@ -52,10 +52,10 @@ TEST(baseN, decode)
     EXPECT_EQ(hex::encode(decode("KyKXa", 58, b58digits, b58map)), "0ccbd755");
     EXPECT_EQ(hex::encode(decode("KyKXaa", 58, b58digits, b58map)), "02e62ec963");
 }
-// TEST(baseN, decode_1e6)
+// TEST(baseN, decode_1e4)
 // {
-//     std::string str(1e6, '0');
-//     decode(str);
+//     std::string str(1e4, '1');
+//     decode(str, 58, b58digits, b58map, str.size() * 733 / 1000 + 1);
 // }
 
 int main(int argc, char **argv)

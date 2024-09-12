@@ -41,7 +41,7 @@ namespace baseN
             idx_str = enc_size - 1;
         uint16_t div = data[idx_div++];
 
-        while (data[zero_count] == 0)
+        while (zero_count < (int64_t)data_size && data[zero_count] == 0)
         {
             zero_count++;
         }
@@ -113,7 +113,7 @@ namespace baseN
             idx_quo_last = dec_size - 2;
         uint16_t div;
 
-        while (str[zero_count] == digits[0])
+        while (str[zero_count] != '\0' && str[zero_count] == digits[0])
         {
             zero_count++;
         }
