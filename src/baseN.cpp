@@ -8,14 +8,13 @@ namespace baseN
 {
     bool isValid(const char *str, const int8_t *map) noexcept
     {
-        uint64_t i = 0;
-        while (str[i] != '\0')
+        std::string_view sv(str);
+        for (size_t i = 0; i < sv.size(); i++)
         {
             if (map[(int8_t)str[i]] == -1)
             {
                 return false;
             }
-            i++;
         }
         return true;
     }
