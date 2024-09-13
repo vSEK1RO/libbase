@@ -36,8 +36,8 @@ namespace hex
     }
     void encode(const uint8_t *data, uint64_t data_size, char *str) noexcept
     {
-        uint64_t i = 0;
-        while (str[i] != '\0' && i / 2 < data_size)
+        std::string_view sv(str);
+        for(size_t i = 0; i < sv.size() && i / 2 < data_size; i++)
         {
             if (i % 2 == 0)
             {
@@ -45,7 +45,6 @@ namespace hex
             } else {
                 str[i] = hexdigits[data[i / 2] & 0x0F];
             }
-            i++;
         }
     }
     std::string encode(const std::vector<uint8_t> &data) noexcept
@@ -60,15 +59,14 @@ namespace hex
         {
             throw std::logic_error("hex::decode: out of digits map");
         }
-        uint64_t i = 0;
-        while (i < data_size && str[i * 2] != '\0')
+        std::string_view sv(str);
+        if (sv.size() % 2 != 0)
         {
-            if(str[i + 1] == '\0')
-            {
-                throw std::logic_error("hex::decode: isn't hex");
-            }
+            throw std::logic_error("hex::decode: isn't hex");
+        }
+        for (size_t i = 0; i < data_size && i * 2 < sv.size(); i++)
+        {
             data[i] = hexmap[(int8_t)str[i * 2]] << 4 | hexmap[(int8_t)str[i * 2 + 1]];
-            i++;
         }
     }
     std::vector<uint8_t> decode(const std::string &str)
