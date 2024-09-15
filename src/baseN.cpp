@@ -9,20 +9,13 @@ namespace baseN
     bool isValid(const char *str, const int8_t *map) noexcept
     {
         std::string_view sv(str);
-        for (size_t i = 0; i < sv.size(); i++)
-        {
-            if (map[(int8_t)str[i]] == -1)
-            {
-                return false;
-            }
-        }
-        return true;
+        return std::all_of(sv.begin(), sv.end(), [map](char ch)
+                           { return map[(int8_t)ch] != -1; });
     }
     bool isValid(const std::string &str, const int8_t *map) noexcept
     {
         return baseN::isValid(str.data(), map);
     }
-
     void encode(const uint8_t *data, uint64_t data_size, char *str, uint8_t base, const char *digits, uint64_t enc_size) noexcept
     {
         if (data_size == 0)
@@ -78,22 +71,19 @@ namespace baseN
         }
         std::copy(res_str, res_str + enc_size, str);
     }
-    std::string encode(std::vector<uint8_t> data, uint8_t base, const char *digits, uint64_t enc_size) noexcept
+    std::string encode(const std::vector<uint8_t> &data, uint8_t base, const char *digits, uint64_t enc_size) noexcept
     {
         std::string str(enc_size, ' ');
         baseN::encode(data.data(), data.size(), str.data(), base, digits, enc_size);
         str.erase(str.begin(), std::find_if(
-            str.begin(), str.end(), [](char ch){
-                return ch != ' ';
-            })
-        );
+                                   str.begin(), str.end(), [](char ch)
+                                   { return ch != ' '; }));
         return str;
     }
-    std::string encode(std::vector<uint8_t> data, uint8_t base, const char *digits) noexcept
+    std::string encode(const std::vector<uint8_t> &data, uint8_t base, const char *digits) noexcept
     {
         return baseN::encode(data, base, digits, data.size() * std::log(256) / std::log(base) + 1);
     }
-
     void decode(const char *str, uint8_t *data, uint64_t data_size, uint8_t base, const char *digits, const int8_t *map, uint64_t dec_size)
     {
         if (str[0] == '\0')
@@ -137,10 +127,8 @@ namespace baseN
         std::vector<uint8_t> data(dec_size);
         baseN::decode(str.data(), data.data(), data.size(), base, digits, map, dec_size);
         data.erase(data.begin(), std::find_if(
-            data.begin(), data.end(), [](uint8_t byte){
-                return byte != 0;
-            })
-        );
+                                     data.begin(), data.end(), [](uint8_t byte)
+                                     { return byte != 0; }));
         return data;
     }
     std::vector<uint8_t> decode(const std::string &str, uint8_t base, const char *digits, const int8_t *map)
