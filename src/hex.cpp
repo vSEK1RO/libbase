@@ -35,9 +35,9 @@ namespace hex
     {
         return baseN::isValid(str, hexmap);
     }
-    void encode(const uint8_t *data, uint64_t data_size, char *str) noexcept
+    void encode(const uint8_t *data, size_t data_size, char *str, size_t str_size) noexcept
     {
-        std::string_view sv(str);
+        std::string_view sv(str, str_size);
         std::span<const uint8_t> dv(data, data_size);
 
         for (size_t i = 0; i < dv.size() && i * 2 + 1 < sv.size(); i++)
@@ -49,16 +49,16 @@ namespace hex
     std::string encode(std::span<const uint8_t> data) noexcept
     {
         std::string str(data.size() * 2, ' ');
-        hex::encode(data.data(), data.size(), str.data());
+        hex::encode(data.data(), data.size(), str.data(), str.size());
         return str;
     }
-    void decode(const char *str, uint8_t *data, uint64_t data_size)
+    void decode(const char *str, size_t str_size, uint8_t *data, size_t data_size)
     {
         if (!hex::isValid(str))
         {
             throw std::logic_error("hex::decode: out of digits map");
         }
-        std::string_view sv(str);
+        std::string_view sv(str, str_size);
         std::span<const uint8_t> dv(data, data_size);
         if (sv.size() % 2 != 0)
         {
@@ -73,7 +73,7 @@ namespace hex
     std::vector<uint8_t> decode(std::string_view str)
     {
         std::vector<uint8_t> data(str.size() / 2);
-        hex::decode(str.data(), data.data(), data.size());
+        hex::decode(str.data(), str.size(), data.data(), data.size());
         return data;
     }
 }

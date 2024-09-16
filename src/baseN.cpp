@@ -6,15 +6,15 @@
 
 namespace baseN
 {
-    bool isValid(const char *str, const int8_t *map) noexcept
+    bool isValid(const char *str, size_t str_size, const int8_t *map) noexcept
     {
-        std::string_view sv(str);
+        std::string_view sv(str, str_size);
         return std::all_of(sv.begin(), sv.end(), [map](char ch)
                            { return map[(int8_t)ch] != -1; });
     }
     bool isValid(std::string_view str, const int8_t *map) noexcept
     {
-        return baseN::isValid(str.data(), map);
+        return baseN::isValid(str.data(), str.size(), map);
     }
     void encode(const uint8_t *data, uint64_t data_size, char *str, uint8_t base, const char *digits, uint64_t enc_size) noexcept
     {
