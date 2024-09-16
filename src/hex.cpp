@@ -37,13 +37,10 @@ namespace hex
     }
     void encode(const uint8_t *data, size_t data_size, char *str, size_t str_size) noexcept
     {
-        std::string_view sv(str, str_size);
-        std::span<const uint8_t> dv(data, data_size);
-
-        for (size_t i = 0; i < dv.size() && i * 2 + 1 < sv.size(); i++)
+        for (size_t i = 0; i < data_size && i * 2 + 1 < str_size; i++)
         {
-            str[i * 2] = hexdigits[dv[i] >> 4];
-            str[i * 2 + 1] = hexdigits[dv[i] & 0x0F];
+            str[i * 2] = hexdigits[data[i] >> 4];
+            str[i * 2 + 1] = hexdigits[data[i] & 0x0F];
         }
     }
     std::string encode(std::span<const uint8_t> data) noexcept
@@ -58,16 +55,13 @@ namespace hex
         {
             throw std::logic_error("hex::decode: out of digits map");
         }
-        std::string_view sv(str, str_size);
-        std::span<const uint8_t> dv(data, data_size);
-        if (sv.size() % 2 != 0)
+        if (str_size % 2 != 0)
         {
             throw std::logic_error("hex::decode: isn't hex");
         }
-
-        for (size_t i = 0; i < dv.size() && i * 2 < sv.size(); i++)
+        for (size_t i = 0; i < data_size && i * 2 < str_size; i++)
         {
-            data[i] = hexmap[(int8_t)sv[i * 2]] << 4 | hexmap[(int8_t)sv[i * 2 + 1]];
+            data[i] = hexmap[(int8_t)str[i * 2]] << 4 | hexmap[(int8_t)str[i * 2 + 1]];
         }
     }
     std::vector<uint8_t> decode(std::string_view str)
