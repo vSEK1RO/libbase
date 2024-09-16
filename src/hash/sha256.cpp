@@ -170,7 +170,7 @@ namespace hash
 		sha256_update(&ctx, data, data_size);
 		sha256_final(&ctx, hash);
 	}
-	std::vector<uint8_t> sha256(const std::vector<uint8_t> &data) noexcept
+	std::vector<uint8_t> sha256(std::span<const uint8_t> data) noexcept
 	{
 		std::vector<uint8_t> hash(SHA256_DIGEST_LENGTH);
 		sha256(data.data(), data.size(), hash.data());

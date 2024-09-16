@@ -1,4 +1,3 @@
-#include <span>
 #include <stdexcept>
 
 #include <base/baseN.hpp>
@@ -31,7 +30,7 @@ namespace hex
     {
         return baseN::isValid(str, hexmap);
     }
-    bool isValid(const std::string &str) noexcept
+    bool isValid(std::string_view str) noexcept
     {
         return baseN::isValid(str, hexmap);
     }
@@ -46,7 +45,7 @@ namespace hex
             str[i * 2 + 1] = hexdigits[dv[i] & 0x0F];
         }
     }
-    std::string encode(const std::vector<uint8_t> &data) noexcept
+    std::string encode(std::span<const uint8_t> data) noexcept
     {
         std::string str(data.size() * 2, ' ');
         hex::encode(data.data(), data.size(), str.data());
@@ -70,7 +69,7 @@ namespace hex
             data[i] = hexmap[(int8_t)sv[i * 2]] << 4 | hexmap[(int8_t)sv[i * 2 + 1]];
         }
     }
-    std::vector<uint8_t> decode(const std::string &str)
+    std::vector<uint8_t> decode(std::string_view str)
     {
         std::vector<uint8_t> data(str.size() / 2);
         hex::decode(str.data(), data.data(), data.size());

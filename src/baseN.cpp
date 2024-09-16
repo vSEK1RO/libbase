@@ -12,7 +12,7 @@ namespace baseN
         return std::all_of(sv.begin(), sv.end(), [map](char ch)
                            { return map[(int8_t)ch] != -1; });
     }
-    bool isValid(const std::string &str, const int8_t *map) noexcept
+    bool isValid(std::string_view str, const int8_t *map) noexcept
     {
         return baseN::isValid(str.data(), map);
     }
@@ -71,7 +71,7 @@ namespace baseN
         }
         std::copy(res_str, res_str + enc_size, str);
     }
-    std::string encode(const std::vector<uint8_t> &data, uint8_t base, const char *digits, uint64_t enc_size) noexcept
+    std::string encode(std::span<const uint8_t> data, uint8_t base, const char *digits, uint64_t enc_size) noexcept
     {
         std::string str(enc_size, ' ');
         baseN::encode(data.data(), data.size(), str.data(), base, digits, enc_size);
@@ -80,7 +80,7 @@ namespace baseN
                                    { return ch != ' '; }));
         return str;
     }
-    std::string encode(const std::vector<uint8_t> &data, uint8_t base, const char *digits) noexcept
+    std::string encode(std::span<const uint8_t> data, uint8_t base, const char *digits) noexcept
     {
         return baseN::encode(data, base, digits, data.size() * std::log(256) / std::log(base) + 1);
     }
@@ -122,7 +122,7 @@ namespace baseN
         }
         std::copy(res_data, res_data + std::min(dec_size, data_size), data);
     }
-    std::vector<uint8_t> decode(const std::string &str, uint8_t base, const char *digits, const int8_t *map, uint64_t dec_size)
+    std::vector<uint8_t> decode(std::string_view str, uint8_t base, const char *digits, const int8_t *map, uint64_t dec_size)
     {
         std::vector<uint8_t> data(dec_size);
         baseN::decode(str.data(), data.data(), data.size(), base, digits, map, dec_size);
@@ -131,7 +131,7 @@ namespace baseN
                                      { return byte != 0; }));
         return data;
     }
-    std::vector<uint8_t> decode(const std::string &str, uint8_t base, const char *digits, const int8_t *map)
+    std::vector<uint8_t> decode(std::string_view str, uint8_t base, const char *digits, const int8_t *map)
     {
         return baseN::decode(str, base, digits, map, str.size() * std::log(base) / std::log(256) + 1);
     }
