@@ -10,6 +10,7 @@ LIB = base
 OBJS =\
 	hex\
 	baseN\
+	base64\
 	hash/sha256\
 
 TOOLS =\
@@ -17,6 +18,7 @@ TOOLS =\
 TESTS =\
 	test-hex\
 	test-baseN\
+	test-base64\
 	hash/test-sha256\
 
 ifeq (${origin CC}, default)
