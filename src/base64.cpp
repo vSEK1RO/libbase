@@ -29,9 +29,9 @@ static const int8_t b64map[] = {
 
 namespace base64
 {
-    bool isValid(const char *str) noexcept
+    bool isValid(const char *str, size_t str_size) noexcept
     {
-        return base64::isValid(std::string_view(str));
+        return base64::isValid(std::string_view(str, str_size));
     }
     bool isValid(std::string_view str) noexcept
     {
@@ -44,12 +44,47 @@ namespace base64
         }
         return baseN::isValid(sv, b64map);
     }
-    // void encode(const uint8_t *data, uint64_t data_size, char *str) noexcept
-    // {
-    // }
-    // std::string encode(std::span<const uint8_t> data) noexcept
-    // {
-    // }
+    void encode(const uint8_t *data, size_t data_size, char *str, size_t str_size)
+    {
+        if (str_size < data_size / 3 * 4 + (data_size % 3 ? 4 : 0))
+        {
+            throw std::logic_error("base64::encode: not enough allocated length");
+        }
+        for (size_t i = 0; i < data_size / 3; i++)
+        {
+            str[i * 4] = b64digits[data[i * 3] >> 2];
+            str[i * 4 + 1] = b64digits[(data[i * 3] << 4 | data[i * 3 + 1] >> 4) & 0x3F];
+            str[i * 4 + 2] = b64digits[(data[i * 3 + 1] << 2 | data[i * 3 + 2] >> 6) & 0x3F];
+            str[i * 4 + 3] = b64digits[data[i * 3 + 2] & 0x3F];
+        }
+        uint64_t last_idx = data_size / 3 * 4;
+        if (last_idx + 3 < str_size)
+        {
+            switch (data_size % 3)
+            {
+            case 1:
+                str[last_idx] = b64digits[data[data_size - 1] >> 2];
+                str[last_idx + 1] = b64digits[data[data_size - 1] << 4 & 0x30];
+                str[last_idx + 2] = '=';
+                str[last_idx + 3] = '=';
+                break;
+            case 2:
+                str[last_idx] = b64digits[data[data_size - 2] >> 2];
+                str[last_idx + 1] = b64digits[(data[data_size - 2] << 4 | data[data_size - 1] >> 4) & 0x3F];
+                str[last_idx + 2] = b64digits[data[data_size - 1] & 0x0F];
+                str[last_idx + 3] = '=';
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    std::string encode(std::span<const uint8_t> data) noexcept
+    {
+        std::string str(data.size() / 3 * 4 + (data.size() % 3 ? 4 : 0), ' ');
+        base64::encode(data.data(), data.size(), str.data(), str.size());
+        return str;
+    }
     // void decode(const char *str, uint8_t *data, uint64_t data_size)
     // {
     // }

@@ -13,14 +13,18 @@ TEST(base64, isValid)
     EXPECT_FALSE(isValid("1==="));
     EXPECT_FALSE(isValid("?!*"));
 }
-// TEST(base64, encode)
-// {
-// }
-// TEST(base64, encode_1e6)
-// {
-//     std::vector<uint8_t> data(1e6);
-//     encode(data);
-// }
+TEST(base64, encode)
+{
+    EXPECT_EQ(encode(hex::decode("")), "");
+    EXPECT_EQ(encode(hex::decode("04a504a5")), "BKUEpQ==");
+    EXPECT_EQ(encode(hex::decode("04a504a500")), "BKUEpQA=");
+    EXPECT_EQ(encode(hex::decode("04a504a50000")), "BKUEpQAA");
+}
+TEST(base64, encode_1e7)
+{
+    std::vector<uint8_t> data(1e7);
+    encode(data);
+}
 // TEST(base64, decode)
 // {
 // }
