@@ -5,7 +5,7 @@ using namespace hex;
 
 TEST(hex, encode)
 {
-    std::vector<uint8_t> data = { 0x74, 0x65, 0x73, 0x74 };
+    std::vector<uint8_t> data = {0x74, 0x65, 0x73, 0x74};
     EXPECT_EQ("74657374", encode(data));
 }
 TEST(hex, encode_1e6)
@@ -15,7 +15,7 @@ TEST(hex, encode_1e6)
 }
 TEST(hex, decode)
 {
-    std::vector<uint8_t> data = { 0x61, 0x6e, 0x6f };
+    std::vector<uint8_t> data = {0x61, 0x6e, 0x6f};
     EXPECT_EQ(decode("616e6f"), data);
 }
 TEST(hex, decode_1e6)
