@@ -35,9 +35,13 @@ namespace hex
     {
         return baseN::isValid(str, hexmap);
     }
-    void encode(const uint8_t *data, size_t data_size, char *str, size_t str_size) noexcept
+    void encode(const uint8_t *data, size_t data_size, char *str, size_t str_size)
     {
-        for (size_t i = 0; i < data_size && i * 2 + 1 < str_size; i++)
+        if (str_size < data_size * 2)
+        {
+            throw std::logic_error("hex::encode: not enough allocated length");
+        }
+        for (size_t i = 0; i < data_size; i++)
         {
             str[i * 2] = hexdigits[data[i] >> 4];
             str[i * 2 + 1] = hexdigits[data[i] & 0x0F];
@@ -59,12 +63,16 @@ namespace hex
         {
             throw std::logic_error("hex::decode: isn't hex");
         }
-        for (size_t i = 0; i < data_size && i * 2 < str_size; i++)
+        if (data_size < str_size / 2)
+        {
+            throw std::logic_error("hex::decode: not enough allocated length");
+        }
+        for (size_t i = 0; i * 2 < str_size; i++)
         {
             data[i] = hexmap[(int8_t)str[i * 2]] << 4 | hexmap[(int8_t)str[i * 2 + 1]];
         }
     }
-    std::vector<uint8_t> decode(std::string_view str)
+    std::vector<uint8_t> decode(std::string_view str) noexcept
     {
         std::vector<uint8_t> data(str.size() / 2);
         hex::decode(str.data(), str.size(), data.data(), data.size());

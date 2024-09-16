@@ -7,6 +7,15 @@ TEST(hex, encode)
 {
     std::vector<uint8_t> data = {0x74, 0x65, 0x73, 0x74};
     EXPECT_EQ("74657374", encode(data));
+    try
+    {
+        std::string str = "";
+        encode(data.data(), data.size(), str.data(), str.size());
+    }
+    catch (const std::exception &e)
+    {
+        EXPECT_STREQ(e.what(), "hex::encode: not enough allocated length");
+    }
 }
 TEST(hex, encode_1e6)
 {
@@ -17,6 +26,15 @@ TEST(hex, decode)
 {
     std::vector<uint8_t> data = {0x61, 0x6e, 0x6f};
     EXPECT_EQ(decode("616e6f"), data);
+    try
+    {
+        std::string str = "";
+        decode("616", 3, data.data(), data.size());
+    }
+    catch (const std::exception &e)
+    {
+        EXPECT_STREQ(e.what(), "hex::decode: isn't hex");
+    }
 }
 TEST(hex, decode_1e6)
 {
