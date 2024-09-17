@@ -55,10 +55,13 @@ namespace base64
         str_size = str_size * 4 + (data.size() % 3 ? 4 : 0);
         return str_size;
     }
-    // uint64_t sizeDecoded(std::string_view str) noexcept
-    // {
-
-    // }
+    uint64_t sizeDecoded(std::string_view str) noexcept
+    {
+        auto size = std::distance(str.begin(), std::find_if(str.rbegin(), str.rend(), [](char ch)
+                                                            { return ch != '='; })
+                                                   .base());
+        return size / 4 * 3 + (size % 4 ? size % 4 - 1 : 0);
+    }
     void encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size)
     {
         if (str_size < base64::sizeEncoded(std::span<const uint8_t>(data, data_size)))
@@ -100,10 +103,48 @@ namespace base64
         base64::encode(data.data(), data.size(), str.data(), str.size());
         return str;
     }
-    // void decode(const char *str, uint8_t *data, uint64_t data_size)
-    // {
-    // }
-    // std::vector<uint8_t> decode(std::string_view str)
-    // {
-    // }
+    void decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size)
+    {
+        std::string_view sv(str, str_size);
+        if (data_size < base64::sizeDecoded(sv))
+        {
+            throw std::logic_error("base64::decode: not enough allocated length");
+        }
+        if (!base64::isValid(sv))
+        {
+            throw std::logic_error("base64::decode: out of digits map");
+        }
+        auto size = std::distance(sv.begin(), std::find_if(sv.rbegin(), sv.rend(), [](char ch)
+                                                           { return ch != '='; })
+                                                  .base());
+        if (sv.size() % 4 != 0 || sv.size() - size > 2)
+        {
+            throw std::logic_error("base64::decode: incorrect padding");
+        }
+        for (auto i = 0; i < size / 4; i++)
+        {
+            data[i * 3] = b64map[(int8_t)str[i * 4]] << 2 | b64map[(int8_t)str[i * 4 + 1]] >> 4;
+            data[i * 3 + 1] = b64map[(int8_t)str[i * 4 + 1]] << 4 | b64map[(int8_t)str[i * 4 + 2]] >> 2;
+            data[i * 3 + 2] = b64map[(int8_t)str[i * 4 + 2]] << 6 | b64map[(int8_t)str[i * 4 + 3]];
+        }
+        uint64_t last_idx = size / 4 * 3;
+        switch (size % 4)
+        {
+        case 2:
+            data[last_idx] = b64map[(int8_t)str[size - 2]] << 2 | b64map[(int8_t)str[size - 1]] >> 4;
+            break;
+        case 3:
+            data[last_idx] = b64map[(int8_t)str[size - 3]] << 2 | b64map[(int8_t)str[size - 2]] >> 4;
+            data[last_idx + 1] = b64map[(int8_t)str[size - 2]] << 4 | b64map[(int8_t)str[size - 1]] >> 2;
+            break;
+        default:
+            break;
+        }
+    }
+    std::vector<uint8_t> decode(std::string_view str) noexcept
+    {
+        std::vector<uint8_t> data(base64::sizeDecoded(str));
+        base64::decode(str.data(), str.size(), data.data(), data.size());
+        return data;
+    }
 }

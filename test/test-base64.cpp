@@ -25,14 +25,18 @@ TEST(base64, encode_1e7)
     std::vector<uint8_t> data(1e7);
     encode(data);
 }
-// TEST(base64, decode)
-// {
-// }
-// TEST(base64, decode_1e6)
-// {
-//     std::string str(1e6, '0');
-//     decode(str);
-// }
+TEST(base64, decode)
+{
+    EXPECT_EQ(hex::encode(decode("")), "");
+    EXPECT_EQ(hex::encode(decode("BKUEpQ==")), "04a504a5");
+    EXPECT_EQ(hex::encode(decode("BKUEpQA=")), "04a504a500");
+    EXPECT_EQ(hex::encode(decode("BKUEpQAA")), "04a504a50000");
+}
+TEST(base64, decode_1e7)
+{
+    std::string str(1e7, '0');
+    decode(str);
+}
 
 int main(int argc, char **argv)
 {
