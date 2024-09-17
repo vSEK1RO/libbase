@@ -1,3 +1,4 @@
+#include <limits>
 #include <stdexcept>
 
 #include <base/baseN.hpp>
@@ -35,9 +36,21 @@ namespace hex
     {
         return baseN::isValid(str, hexmap);
     }
+    uint64_t sizeEncoded(std::span<const uint8_t> data)
+    {
+        if (data.size() > std::numeric_limits<uint64_t>::max() / 2)
+        {
+            throw std::overflow_error("hex::sizeEncoded: overflow");
+        }
+        return data.size() * 2;
+    }
+    uint64_t sizeDecoded(std::string_view str) noexcept
+    {
+        return str.size() / 2;
+    }
     void encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size)
     {
-        if (str_size < data_size * 2)
+        if (str_size < hex::sizeEncoded(std::span<const uint8_t>(data, data_size)))
         {
             throw std::logic_error("hex::encode: not enough allocated length");
         }
@@ -49,7 +62,7 @@ namespace hex
     }
     std::string encode(std::span<const uint8_t> data) noexcept
     {
-        std::string str(data.size() * 2, ' ');
+        std::string str(hex::sizeEncoded(data), ' ');
         hex::encode(data.data(), data.size(), str.data(), str.size());
         return str;
     }
@@ -59,7 +72,7 @@ namespace hex
         {
             throw std::logic_error("hex::decode: isn't hex");
         }
-        if (data_size < str_size / 2)
+        if (data_size < hex::sizeDecoded(std::string_view(str, str_size)))
         {
             throw std::logic_error("hex::decode: not enough allocated length");
         }
@@ -74,7 +87,7 @@ namespace hex
     }
     std::vector<uint8_t> decode(std::string_view str) noexcept
     {
-        std::vector<uint8_t> data(str.size() / 2);
+        std::vector<uint8_t> data(hex::sizeDecoded(str));
         hex::decode(str.data(), str.size(), data.data(), data.size());
         return data;
     }

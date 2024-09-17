@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <limits>
 #include <stdexcept>
 
 #include <base/base64.hpp>
@@ -44,9 +45,23 @@ namespace base64
         }
         return baseN::isValid(sv, b64map);
     }
+    uint64_t sizeEncoded(std::span<const uint8_t> data)
+    {
+        uint64_t str_size = data.size() / 3;
+        if (str_size > std::numeric_limits<uint64_t>::max() / 4)
+        {
+            throw std::overflow_error("base64::sizeEncoded: overflow");
+        }
+        str_size = str_size * 4 + (data.size() % 3 ? 4 : 0);
+        return str_size;
+    }
+    // uint64_t sizeDecoded(std::string_view str) noexcept
+    // {
+
+    // }
     void encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size)
     {
-        if (str_size < data_size / 3 * 4 + (data_size % 3 ? 4 : 0))
+        if (str_size < base64::sizeEncoded(std::span<const uint8_t>(data, data_size)))
         {
             throw std::logic_error("base64::encode: not enough allocated length");
         }
@@ -81,7 +96,7 @@ namespace base64
     }
     std::string encode(std::span<const uint8_t> data) noexcept
     {
-        std::string str(data.size() / 3 * 4 + (data.size() % 3 ? 4 : 0), ' ');
+        std::string str(base64::sizeEncoded(data), ' ');
         base64::encode(data.data(), data.size(), str.data(), str.size());
         return str;
     }
