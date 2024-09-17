@@ -27,12 +27,14 @@
 #define SIG0(x) (ROTRIGHT(x,7) ^ ROTRIGHT(x,18) ^ ((x) >> 3))
 #define SIG1(x) (ROTRIGHT(x,17) ^ ROTRIGHT(x,19) ^ ((x) >> 10))
 
-struct SHA256_CTX{
-	uint8_t data[64];
-	uint32_t datalen;
-	unsigned long long bitlen;
-	uint32_t state[8];
-};
+namespace {
+	struct SHA256_CTX{
+		uint8_t data[64];
+		uint32_t datalen;
+		unsigned long long bitlen;
+		uint32_t state[8];
+	};
+}
 
 static const uint32_t k[64] = {
 	0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
@@ -163,7 +165,7 @@ static void sha256_final(SHA256_CTX *ctx, uint8_t *hash)
 
 namespace hash
 {
-	void sha256(const uint8_t *data, size_t data_size, uint8_t *hash) noexcept
+	void sha256(const uint8_t *data, uint64_t data_size, uint8_t *hash) noexcept
 	{
 		SHA256_CTX ctx;
 		sha256_init(&ctx);

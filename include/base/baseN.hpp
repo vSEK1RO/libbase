@@ -7,7 +7,7 @@
 
 namespace baseN
 {
-    bool isValid(const char *str, size_t str_size, const int8_t *map) noexcept;
+    bool isValid(const char *str, uint64_t str_size, const int8_t *map) noexcept;
     bool isValid(std::string_view str, const int8_t *map) noexcept;
 
     void encode(const uint8_t *data, uint64_t data_size, char *str, uint8_t base, const char *digits, uint64_t enc_size) noexcept;

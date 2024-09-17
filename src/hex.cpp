@@ -27,7 +27,7 @@ static const int8_t hexmap[] = {
 
 namespace hex
 {
-    bool isValid(const char *str, size_t str_size) noexcept
+    bool isValid(const char *str, uint64_t str_size) noexcept
     {
         return baseN::isValid(str, str_size, hexmap);
     }
@@ -35,13 +35,13 @@ namespace hex
     {
         return baseN::isValid(str, hexmap);
     }
-    void encode(const uint8_t *data, size_t data_size, char *str, size_t str_size)
+    void encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size)
     {
         if (str_size < data_size * 2)
         {
             throw std::logic_error("hex::encode: not enough allocated length");
         }
-        for (size_t i = 0; i < data_size; i++)
+        for (uint64_t i = 0; i < data_size; i++)
         {
             str[i * 2] = hexdigits[data[i] >> 4];
             str[i * 2 + 1] = hexdigits[data[i] & 0x0F];
@@ -53,7 +53,7 @@ namespace hex
         hex::encode(data.data(), data.size(), str.data(), str.size());
         return str;
     }
-    void decode(const char *str, size_t str_size, uint8_t *data, size_t data_size)
+    void decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size)
     {
         if (str_size % 2 != 0)
         {
@@ -67,7 +67,7 @@ namespace hex
         {
             throw std::logic_error("hex::decode: out of digits map");
         }
-        for (size_t i = 0; i * 2 < str_size; i++)
+        for (uint64_t i = 0; i * 2 < str_size; i++)
         {
             data[i] = hexmap[(int8_t)str[i * 2]] << 4 | hexmap[(int8_t)str[i * 2 + 1]];
         }

@@ -6,7 +6,7 @@
 
 namespace baseN
 {
-    bool isValid(const char *str, size_t str_size, const int8_t *map) noexcept
+    bool isValid(const char *str, uint64_t str_size, const int8_t *map) noexcept
     {
         std::string_view sv(str, str_size);
         return std::all_of(sv.begin(), sv.end(), [map](char ch)

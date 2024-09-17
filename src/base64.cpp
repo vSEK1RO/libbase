@@ -29,7 +29,7 @@ static const int8_t b64map[] = {
 
 namespace base64
 {
-    bool isValid(const char *str, size_t str_size) noexcept
+    bool isValid(const char *str, uint64_t str_size) noexcept
     {
         return base64::isValid(std::string_view(str, str_size));
     }
@@ -44,13 +44,13 @@ namespace base64
         }
         return baseN::isValid(sv, b64map);
     }
-    void encode(const uint8_t *data, size_t data_size, char *str, size_t str_size)
+    void encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size)
     {
         if (str_size < data_size / 3 * 4 + (data_size % 3 ? 4 : 0))
         {
             throw std::logic_error("base64::encode: not enough allocated length");
         }
-        for (size_t i = 0; i < data_size / 3; i++)
+        for (uint64_t i = 0; i < data_size / 3; i++)
         {
             str[i * 4] = b64digits[data[i * 3] >> 2];
             str[i * 4 + 1] = b64digits[(data[i * 3] << 4 | data[i * 3 + 1] >> 4) & 0x3F];
