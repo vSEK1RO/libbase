@@ -7,7 +7,7 @@
 
 namespace hex
 {
-    bool isValid(const char *str) noexcept;
+    bool isValid(const char *str, size_t str_size) noexcept;
     bool isValid(std::string_view str) noexcept;
 
     void encode(const uint8_t *data, size_t data_size, char *str, size_t str_size);

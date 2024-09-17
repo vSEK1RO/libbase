@@ -17,9 +17,9 @@ TEST(hex, encode)
         EXPECT_STREQ(e.what(), "hex::encode: not enough allocated length");
     }
 }
-TEST(hex, encode_1e6)
+TEST(hex, encode_1e7)
 {
-    std::vector<uint8_t> data(1e6);
+    std::vector<uint8_t> data(1e7);
     encode(data);
 }
 TEST(hex, decode)
@@ -36,9 +36,9 @@ TEST(hex, decode)
         EXPECT_STREQ(e.what(), "hex::decode: isn't hex");
     }
 }
-TEST(hex, decode_1e6)
+TEST(hex, decode_1e7)
 {
-    std::string str(1e6, '0');
+    std::string str(1e7, '0');
     decode(str);
 }
 

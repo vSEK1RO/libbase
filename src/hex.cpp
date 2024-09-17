@@ -27,9 +27,9 @@ static const int8_t hexmap[] = {
 
 namespace hex
 {
-    bool isValid(const char *str) noexcept
+    bool isValid(const char *str, size_t str_size) noexcept
     {
-        return baseN::isValid(str, hexmap);
+        return baseN::isValid(str, str_size, hexmap);
     }
     bool isValid(std::string_view str) noexcept
     {
@@ -55,10 +55,6 @@ namespace hex
     }
     void decode(const char *str, size_t str_size, uint8_t *data, size_t data_size)
     {
-        if (!hex::isValid(str))
-        {
-            throw std::logic_error("hex::decode: out of digits map");
-        }
         if (str_size % 2 != 0)
         {
             throw std::logic_error("hex::decode: isn't hex");
@@ -66,6 +62,10 @@ namespace hex
         if (data_size < str_size / 2)
         {
             throw std::logic_error("hex::decode: not enough allocated length");
+        }
+        if (!hex::isValid(str, str_size))
+        {
+            throw std::logic_error("hex::decode: out of digits map");
         }
         for (size_t i = 0; i * 2 < str_size; i++)
         {
