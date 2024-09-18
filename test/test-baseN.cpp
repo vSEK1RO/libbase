@@ -32,19 +32,21 @@ TEST(baseN, isValid)
     EXPECT_EQ(true, isValid("123", b58map));
     EXPECT_EQ(false, isValid("@#$", b58map));
 }
-// TEST(baseN, encode)
-// {
-//     EXPECT_EQ("Ky", encode(hex::decode("044c"), 58, b58digits));
-//     EXPECT_EQ("KyK", encode(hex::decode("f94a"), 58, b58digits));
-//     EXPECT_EQ("KyKX", encode(hex::decode("387ae2"), 58, b58digits));
-//     EXPECT_EQ("KyKXa", encode(hex::decode("0ccbd755"), 58, b58digits));
-//     EXPECT_EQ("KyKXaa", encode(hex::decode("02e62ec963"), 58, b58digits));
-// }
-// TEST(baseN, encode_1e3)
-// {
-//     std::vector<uint8_t> data(1e3);
-//     encode(data, 58, b58digits, data.size() * 138 / 100 + 1);
-// }
+TEST(baseN, encode)
+{
+    EXPECT_EQ("", encode(hex::decode(""), 58, b58digits));
+    EXPECT_EQ("Ky", encode(hex::decode("044c"), 58, b58digits));
+    EXPECT_EQ("KyK", encode(hex::decode("f94a"), 58, b58digits));
+    EXPECT_EQ("KyKX", encode(hex::decode("387ae2"), 58, b58digits));
+    EXPECT_EQ("KyKXa", encode(hex::decode("0ccbd755"), 58, b58digits));
+    EXPECT_EQ("KyKXaa", encode(hex::decode("02e62ec963"), 58, b58digits));
+}
+TEST(baseN, encode_1e3)
+{
+    std::vector<uint8_t> data(1e3);
+    std::fill(data.begin(), data.end(), 1);
+    encode(data, 58, b58digits);
+}
 // TEST(baseN, decode)
 // {
 //     EXPECT_EQ(hex::encode(decode("Ky", 58, b58digits, b58map)), "044c");
