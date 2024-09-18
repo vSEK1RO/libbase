@@ -58,12 +58,17 @@ DIRS =\
 build: library tools
 
 i: install
-install: build\
+install:\
+	build\
+	${USRINC}/${LIB}.hpp\
+	${patsubst %, ${USRINC}/${LIB}/%.hpp, ${OBJS}}\
 	${patsubst %, ${USRLIB}/lib${LIB}${-g}%, .so .a}\
 	${patsubst %, ${USRBIN}/%${-g}, ${TOOLS}}
 
 uni: uninstall
 uninstall:
+	rm -f ${USRINC}/${LIB}.hpp
+	rm -f ${patsubst %, ${USRINC}/${LIB}/%.hpp, ${OBJS}}
 	rm -f ${patsubst %, ${USRLIB}/lib${LIB}${-g}%, .so .a}
 	rm -f ${patsubst %, ${USRBIN}/%${-g}, ${TOOLS}}
 
@@ -83,8 +88,11 @@ ${LIBDIR}/lib${LIB}${-g}.so: ${patsubst %, ${OBJDIR}/%${-g}.o, ${OBJS}}
 ${LIBDIR}/lib${LIB}${-g}.a: ${patsubst %, ${OBJDIR}/%${-g}.o, ${OBJS}}
 	ar rcs $@ $^
 
+${USRINC}/%: ${INCDIR}/%
+	install -Dm644 $< $@
+
 ${USRLIB}/lib${LIB}${-g}%: ${LIBDIR}/lib${LIB}${-g}%
-	cp $< $@
+	install -Dm755 $< $@
 
 endif
 ifneq (${TOOLS},)
@@ -95,7 +103,7 @@ ${BINDIR}/%${-g}: ${SRCDIR}/%.cpp ${patsubst %, ${OBJDIR}/%${-g}.o, ${OBJS}}
 	${CC} -o $@ $< -I${INCDIR} -L${LIBDIR} ${-l} -l${LIB}${-g} ${CFLAGS}
 
 ${USRBIN}/%${-g}: ${BINDIR}/%${-g}
-	cp $< $@
+	install -Dm755 $< $@
 
 endif
 ifneq (${TESTS},)
