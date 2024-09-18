@@ -47,19 +47,20 @@ TEST(baseN, encode_1e3)
     std::fill(data.begin(), data.end(), 1);
     encode(data, 58, b58digits);
 }
-// TEST(baseN, decode)
-// {
-//     EXPECT_EQ(hex::encode(decode("Ky", 58, b58digits, b58map)), "044c");
-//     EXPECT_EQ(hex::encode(decode("KyK", 58, b58digits, b58map)), "f94a");
-//     EXPECT_EQ(hex::encode(decode("KyKX", 58, b58digits, b58map)), "387ae2");
-//     EXPECT_EQ(hex::encode(decode("KyKXa", 58, b58digits, b58map)), "0ccbd755");
-//     EXPECT_EQ(hex::encode(decode("KyKXaa", 58, b58digits, b58map)), "02e62ec963");
-// }
-// TEST(baseN, decode_1e4)
-// {
-//     std::string str(1e4, '1');
-//     decode(str, 58, b58digits, b58map, str.size() * 733 / 1000 + 1);
-// }
+TEST(baseN, decode)
+{
+    EXPECT_EQ(hex::encode(decode("", 58, b58digits, b58map)), "");
+    EXPECT_EQ(hex::encode(decode("Ky", 58, b58digits, b58map)), "044c");
+    EXPECT_EQ(hex::encode(decode("KyK", 58, b58digits, b58map)), "f94a");
+    EXPECT_EQ(hex::encode(decode("KyKX", 58, b58digits, b58map)), "387ae2");
+    EXPECT_EQ(hex::encode(decode("KyKXa", 58, b58digits, b58map)), "0ccbd755");
+    EXPECT_EQ(hex::encode(decode("KyKXaa", 58, b58digits, b58map)), "02e62ec963");
+}
+TEST(baseN, decode_1e3)
+{
+    std::string str(1e3, '2');
+    decode(str, 58, b58digits, b58map);
+}
 
 int main(int argc, char **argv)
 {

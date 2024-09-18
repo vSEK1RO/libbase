@@ -84,4 +84,46 @@ namespace baseN
                                    { return ch != ' '; }));
         return str;
     }
+    void decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size, uint8_t base, const char *digits, const int8_t *map)
+    {
+        std::string_view sv(std::find_if(str, str + str_size, [digits](char ch)
+                                         { return ch != digits[0]; }),
+                            str_size);
+        if (sv.size() == 0)
+        {
+            return;
+        }
+        if (!baseN::isValid(sv, map))
+        {
+            throw std::logic_error("baseN::decode: out of digits map");
+        }
+        std::span<uint8_t> dv(data, data_size);
+        auto sv_it = sv.begin();
+        auto quo_it = dv.rbegin();
+        auto quo_it_last = dv.rbegin() + 1;
+        uint16_t div;
+
+        *quo_it = map[(int8_t)*sv_it++];
+        while (sv_it < sv.end())
+        {
+            div = map[(int8_t)*sv_it++];
+            while (quo_it < quo_it_last && quo_it < dv.rend() - 1)
+            {
+                div += *quo_it * base;
+                *quo_it++ = div;
+                div >>= 8;
+            }
+            *quo_it++ = div;
+            quo_it_last = quo_it;
+            quo_it = dv.rbegin();
+        }
+    }
+    std::vector<uint8_t> decode(std::string_view str, uint8_t base, const char *digits, const int8_t *map) noexcept
+    {
+        std::vector<uint8_t> data(baseN::sizeDecoded(str, base));
+        baseN::decode(str.data(), str.size(), data.data(), data.size(), base, digits, map);
+        data.erase(data.begin(), std::find_if(data.begin(), data.end(), [](uint8_t item)
+                                              { return item != 0; }));
+        return data;
+    }
 }
