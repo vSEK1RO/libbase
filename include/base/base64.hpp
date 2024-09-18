@@ -11,7 +11,7 @@ namespace base64
     bool isValid(std::string_view str) noexcept;
 
     uint64_t sizeEncoded(std::span<const uint8_t> data);
-    uint64_t sizeDecoded(std::string_view str_size) noexcept;
+    uint64_t sizeDecoded(std::string_view str) noexcept;
 
     void encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size);
     std::string encode(std::span<const uint8_t> data) noexcept;
