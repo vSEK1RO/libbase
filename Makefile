@@ -37,6 +37,9 @@ endif
 
 ifneq (${SHARED}, false)
 CFLAGS += -Xlinker -rpath=${LIBDIR}
+-lLIB = -l:lib${LIB}${-g}.so
+else
+-lLIB = -l:lib${LIB}${-g}.a
 endif
 
 SRCDIR = src
@@ -100,7 +103,7 @@ ifneq (${TOOLS},)
 tools: library ${DIRS} ${patsubst %, ${BINDIR}/%${-g}, ${TOOLS}}
 
 ${BINDIR}/%${-g}: ${SRCDIR}/%.cpp ${patsubst %, ${OBJDIR}/%${-g}.o, ${OBJS}}
-	${CC} -o $@ $< -I${INCDIR} -L${LIBDIR} ${-l} -l${LIB}${-g} ${CFLAGS}
+	${CC} -o $@ $< -I${INCDIR} -L${LIBDIR} ${-l} ${-lLIB} ${CFLAGS}
 
 ${USRBIN}/%${-g}: ${BINDIR}/%${-g}
 	install -Dm755 $< $@
@@ -112,7 +115,7 @@ tests: library ${DIRS} ${patsubst %, ${BINDIR}/%${-g}, ${TESTS}}
 	${patsubst %, ./${BINDIR}/%${-g};, ${TESTS}}
 
 ${BINDIR}/%${-g}: ${TESTDIR}/%.cpp ${patsubst %, ${OBJDIR}/%${-g}.o, ${OBJS}}
-	${CC} -o $@ $< -I${INCDIR} -L${LIBDIR} ${-l} -l${LIB}${-g} -lgtest ${CFLAGS}
+	${CC} -o $@ $< -I${INCDIR} -L${LIBDIR} ${-l} ${-lLIB} -lgtest ${CFLAGS}
 
 endif
 
