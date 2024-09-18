@@ -1,3 +1,5 @@
+#include <utility>
+
 #include <base/base64.hpp>
 #include <base/hex.hpp>
 #include <gtest/gtest.h>
@@ -6,19 +8,26 @@ using namespace base64;
 
 TEST(base64, isValid)
 {
-    EXPECT_TRUE(isValid("12=="));
-    EXPECT_TRUE(isValid("123="));
-    EXPECT_TRUE(isValid("1234"));
-
-    EXPECT_FALSE(isValid("1==="));
-    EXPECT_FALSE(isValid("?!*"));
+    std::vector<std::pair<bool, std::string>> tests = {
+        {true, "12=="},
+        {true, "123="},
+        {true, "1234"},
+        {false, "1==="},
+        {false, "?!*"},
+    };
+    for (auto it : tests)
+        EXPECT_EQ(it.first, isValid(it.second));
 }
 TEST(base64, encode)
 {
-    EXPECT_EQ(encode(hex::decode("")), "");
-    EXPECT_EQ(encode(hex::decode("04a504a5")), "BKUEpQ==");
-    EXPECT_EQ(encode(hex::decode("04a504a500")), "BKUEpQA=");
-    EXPECT_EQ(encode(hex::decode("04a504a50000")), "BKUEpQAA");
+    std::vector<std::pair<std::string, std::string>> tests = {
+        {"", ""},
+        {"BKUEpQ==", "04a504a5"},
+        {"BKUEpQA=", "04a504a500"},
+        {"BKUEpQAA", "04a504a50000"},
+    };
+    for (auto it : tests)
+        EXPECT_EQ(it.first, encode(hex::decode(it.second)));
 }
 TEST(base64, encode_1e7)
 {
@@ -27,10 +36,14 @@ TEST(base64, encode_1e7)
 }
 TEST(base64, decode)
 {
-    EXPECT_EQ(hex::encode(decode("")), "");
-    EXPECT_EQ(hex::encode(decode("BKUEpQ==")), "04a504a5");
-    EXPECT_EQ(hex::encode(decode("BKUEpQA=")), "04a504a500");
-    EXPECT_EQ(hex::encode(decode("BKUEpQAA")), "04a504a50000");
+    std::vector<std::pair<std::string, std::string>> tests = {
+        {"", ""},
+        {"BKUEpQ==", "04a504a5"},
+        {"BKUEpQA=", "04a504a500"},
+        {"BKUEpQAA", "04a504a50000"},
+    };
+    for (auto it : tests)
+        EXPECT_EQ(hex::encode(decode(it.first)), it.second);
 }
 TEST(base64, decode_1e7)
 {

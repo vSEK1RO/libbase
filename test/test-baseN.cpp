@@ -1,3 +1,5 @@
+#include <utility>
+
 #include <base/baseN.hpp>
 #include <base/hex.hpp>
 #include <gtest/gtest.h>
@@ -29,17 +31,25 @@ static const int8_t b58map[] = {
 
 TEST(baseN, isValid)
 {
-    EXPECT_EQ(true, isValid("123", b58map));
-    EXPECT_EQ(false, isValid("@#$", b58map));
+    std::vector<std::pair<bool, std::string>> tests = {
+        {true, "123"},
+        {false, "@#$"},
+    };
+    for (auto it : tests)
+        EXPECT_EQ(it.first, isValid(it.second, b58map));
 }
 TEST(baseN, encode)
 {
-    EXPECT_EQ("", encode(hex::decode(""), 58, b58digits));
-    EXPECT_EQ("Ky", encode(hex::decode("044c"), 58, b58digits));
-    EXPECT_EQ("KyK", encode(hex::decode("f94a"), 58, b58digits));
-    EXPECT_EQ("KyKX", encode(hex::decode("387ae2"), 58, b58digits));
-    EXPECT_EQ("KyKXa", encode(hex::decode("0ccbd755"), 58, b58digits));
-    EXPECT_EQ("KyKXaa", encode(hex::decode("02e62ec963"), 58, b58digits));
+    std::vector<std::pair<std::string, std::string>> tests = {
+        {"", ""},
+        {"Ky", "044c"},
+        {"KyK", "f94a"},
+        {"KyKX", "387ae2"},
+        {"KyKXa", "0ccbd755"},
+        {"KyKXaa", "02e62ec963"},
+    };
+    for (auto it : tests)
+        EXPECT_EQ(it.first, encode(hex::decode(it.second), 58, b58digits));
 }
 TEST(baseN, encode_1e3)
 {
@@ -49,12 +59,16 @@ TEST(baseN, encode_1e3)
 }
 TEST(baseN, decode)
 {
-    EXPECT_EQ(hex::encode(decode("", 58, b58digits, b58map)), "");
-    EXPECT_EQ(hex::encode(decode("Ky", 58, b58digits, b58map)), "044c");
-    EXPECT_EQ(hex::encode(decode("KyK", 58, b58digits, b58map)), "f94a");
-    EXPECT_EQ(hex::encode(decode("KyKX", 58, b58digits, b58map)), "387ae2");
-    EXPECT_EQ(hex::encode(decode("KyKXa", 58, b58digits, b58map)), "0ccbd755");
-    EXPECT_EQ(hex::encode(decode("KyKXaa", 58, b58digits, b58map)), "02e62ec963");
+    std::vector<std::pair<std::string, std::string>> tests = {
+        {"", ""},
+        {"Ky", "044c"},
+        {"KyK", "f94a"},
+        {"KyKX", "387ae2"},
+        {"KyKXa", "0ccbd755"},
+        {"KyKXaa", "02e62ec963"},
+    };
+    for (auto it : tests)
+        EXPECT_EQ(hex::encode(decode(it.first, 58, b58digits, b58map)), it.second);
 }
 TEST(baseN, decode_1e3)
 {
