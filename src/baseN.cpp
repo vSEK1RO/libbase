@@ -11,8 +11,7 @@ namespace baseN
 {
     bool isValid(const char *str, uint64_t str_size, const int8_t *map) noexcept
     {
-        std::string_view sv(str, str_size);
-        return std::all_of(sv.begin(), sv.end(), [map](char ch)
+        return std::all_of(str, str + str_size, [map](char ch)
                            { return map[(int8_t)ch] != -1; });
     }
     bool isValid(std::string_view str, const int8_t *map) noexcept

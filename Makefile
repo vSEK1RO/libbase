@@ -11,6 +11,7 @@ LIB = base
 OBJS =\
 	hex\
 	baseN\
+	base58\
 	base64\
 	hash/sha256\
 
@@ -19,6 +20,7 @@ TOOLS =\
 TESTS =\
 	test-hex\
 	test-baseN\
+	test-base58\
 	test-base64\
 	hash/test-sha256\
 
