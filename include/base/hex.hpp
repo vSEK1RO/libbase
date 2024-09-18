@@ -7,6 +7,9 @@
 
 namespace hex
 {
+    extern const char digits[17];
+    extern const int8_t map[256];
+
     bool isValid(const char *str, uint64_t str_size) noexcept;
     bool isValid(std::string_view str) noexcept;
 
