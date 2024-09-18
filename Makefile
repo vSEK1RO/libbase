@@ -36,7 +36,7 @@ CFLAGS += -O3
 endif
 
 ifneq (${SHARED}, false)
-CFLAGS += -Xlinker -rpath=${BINDIR}
+CFLAGS += -Xlinker -rpath=${LIBDIR}
 endif
 
 SRCDIR = src
@@ -59,14 +59,12 @@ build: library tools
 
 i: install
 install: build\
-	${USRLIB}/lib${LIB}${-g}.a\
-	${USRLIB}/lib${LIB}${-g}.so\
+	${patsubst %, ${USRLIB}/lib${LIB}${-g}%, .so .a}\
 	${patsubst %, ${USRBIN}/%${-g}, ${TOOLS}}
 
 uni: uninstall
 uninstall:
-	rm -f ${USRLIB}/lib${LIB}${-g}.a
-	rm -f ${USRLIB}/lib${LIB}${-g}.so
+	rm -f ${patsubst %, ${USRLIB}/lib${LIB}${-g}%, .so .a}
 	rm -f ${patsubst %, ${USRBIN}/%${-g}, ${TOOLS}}
 
 clean:
@@ -74,21 +72,18 @@ clean:
 
 ifneq (${OBJS},)
 
-library: ${DIRS} ${LIBDIR}/lib${LIB}${-g}.a ${BINDIR}/lib${LIB}${-g}.so
+library: ${DIRS} ${patsubst %, ${LIBDIR}/lib${LIB}${-g}%, .so .a}
 
 ${OBJDIR}/%${-g}.o: ${SRCDIR}/%.cpp ${INCDIR}/${LIB}/%.hpp
 	${CC} -o $@ -c $< -I${INCDIR} ${-l} ${CFLAGS}
 
-${BINDIR}/lib${LIB}${-g}.so: ${patsubst %, ${OBJDIR}/%${-g}.o, ${OBJS}}
+${LIBDIR}/lib${LIB}${-g}.so: ${patsubst %, ${OBJDIR}/%${-g}.o, ${OBJS}}
 	${CC} -shared -o $@ $^ 
 
 ${LIBDIR}/lib${LIB}${-g}.a: ${patsubst %, ${OBJDIR}/%${-g}.o, ${OBJS}}
 	ar rcs $@ $^
 
-${USRLIB}/lib${LIB}${-g}.so: ${BINDIR}/lib${LIB}${-g}.so
-	cp $< $@
-
-${USRLIB}/lib${LIB}${-g}.a: ${LIBDIR}/lib${LIB}${-g}.a
+${USRLIB}/lib${LIB}${-g}%: ${LIBDIR}/lib${LIB}${-g}%
 	cp $< $@
 
 endif
@@ -97,11 +92,7 @@ ifneq (${TOOLS},)
 tools: library ${DIRS} ${patsubst %, ${BINDIR}/%${-g}, ${TOOLS}}
 
 ${BINDIR}/%${-g}: ${SRCDIR}/%.cpp ${patsubst %, ${OBJDIR}/%${-g}.o, ${OBJS}}
-ifneq (${SHARED}, false)
-	${CC} -o $@ $< -I${INCDIR} -L${BINDIR} ${-l} -l:lib${LIB}${-g}.so ${CFLAGS}
-else
-	${CC} -o $@ $< -I${INCDIR} -L${LIBDIR} ${-l} -l:lib${LIB}${-g}.a ${CFLAGS}
-endif
+	${CC} -o $@ $< -I${INCDIR} -L${LIBDIR} ${-l} -l${LIB}${-g} ${CFLAGS}
 
 ${USRBIN}/%${-g}: ${BINDIR}/%${-g}
 	cp $< $@
@@ -113,11 +104,7 @@ tests: library ${DIRS} ${patsubst %, ${BINDIR}/%${-g}, ${TESTS}}
 	${patsubst %, ./${BINDIR}/%${-g};, ${TESTS}}
 
 ${BINDIR}/%${-g}: ${TESTDIR}/%.cpp ${patsubst %, ${OBJDIR}/%${-g}.o, ${OBJS}}
-ifneq (${SHARED}, false)
-	${CC} -o $@ $< -I${INCDIR} -L${BINDIR} ${-l} -l:lib${LIB}${-g}.so -lgtest ${CFLAGS}
-else
-	${CC} -o $@ $< -I${INCDIR} -L${LIBDIR} ${-l} -l:lib${LIB}${-g}.a -lgtest ${CFLAGS}
-endif
+	${CC} -o $@ $< -I${INCDIR} -L${LIBDIR} ${-l} -l${LIB}${-g} -lgtest ${CFLAGS}
 
 endif
 
