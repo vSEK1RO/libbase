@@ -16,6 +16,24 @@ TEST(baseN, isValid)
     for (auto it : tests)
         EXPECT_EQ(it.first, isValid(it.second, base58::map));
 }
+TEST(baseN, sizeEncoded)
+{
+    std::vector<std::pair<uint64_t, std::string>> tests = {
+        {6, "12341234"},
+        {5, "00000000"},
+    };
+    for (auto it : tests)
+        EXPECT_EQ(it.first, sizeEncoded(hex::decode(it.second), 58));
+}
+TEST(baseN, sizeDecoded)
+{
+    std::vector<std::pair<uint64_t, std::string>> tests = {
+        {3, "qwer"},
+        {5, "1111"},
+    };
+    for (auto it : tests)
+        EXPECT_EQ(it.first, sizeDecoded(it.second, 58, base58::digits));
+}
 std::vector<std::pair<std::string, std::string>> tests = {
     {"", ""},
     {"Ky", "044c"},

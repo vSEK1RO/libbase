@@ -20,15 +20,21 @@ namespace baseN
     }
     uint64_t sizeEncoded(std::span<const uint8_t> data, uint8_t base)
     {
-        if (data.size() > std::numeric_limits<uint64_t>::max() / log256)
+        std::span<const uint8_t> dv(std::find_if(data.begin(), data.end(), [](uint8_t item)
+                                                 { return item != 0; }),
+                                    data.end());
+        if (dv.size() > std::numeric_limits<uint64_t>::max() / log256)
         {
             throw std::overflow_error("baseN::sizeEncoded: overflow");
         }
-        return data.size() * log256 / std::log(base) + 1;
+        return dv.size() * log256 / std::log(base) + 1 + (data.size() - dv.size());
     }
-    uint64_t sizeDecoded(std::string_view str, uint8_t base) noexcept
+    uint64_t sizeDecoded(std::string_view str, uint8_t base, const char *digits) noexcept
     {
-        return str.size() * std::log(base) / log256 + 1;
+        std::string_view sv(std::find_if(str.begin(), str.end(), [digits](uint8_t ch)
+                                         { return ch != digits[0]; }),
+                            str.end());
+        return sv.size() * std::log(base) / log256 + 1 + (str.size() - sv.size());
     }
     void encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size, uint8_t base, const char *digits)
     {
@@ -119,7 +125,7 @@ namespace baseN
     }
     std::vector<uint8_t> decode(std::string_view str, uint8_t base, const char *digits, const int8_t *map) noexcept
     {
-        std::vector<uint8_t> data(baseN::sizeDecoded(str, base));
+        std::vector<uint8_t> data(baseN::sizeDecoded(str, base, digits));
         baseN::decode(str.data(), str.size(), data.data(), data.size(), base, digits, map);
         data.erase(data.begin(), std::find_if(data.begin(), data.end(), [](uint8_t item)
                                               { return item != 0; }));

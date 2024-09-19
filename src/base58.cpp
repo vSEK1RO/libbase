@@ -41,7 +41,7 @@ namespace base58
     }
     uint64_t sizeDecoded(std::string_view str) noexcept
     {
-        return baseN::sizeDecoded(str, 58);
+        return baseN::sizeDecoded(str, 58, digits);
     }
     void encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size) noexcept
     {
