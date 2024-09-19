@@ -13,9 +13,9 @@ namespace baseN
     uint64_t sizeEncoded(std::span<const uint8_t> data, uint8_t base);
     uint64_t sizeDecoded(std::string_view str, uint8_t base, const char* digits) noexcept;
 
-    void encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size, uint8_t base, const char *digits);
+    uint64_t encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size, uint8_t base, const char *digits);
     std::string encode(std::span<const uint8_t> data, uint8_t base, const char *digits) noexcept;
 
-    void decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size, uint8_t base, const char *digits, const int8_t *map);
+    uint64_t decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size, uint8_t base, const char *digits, const int8_t *map);
     std::vector<uint8_t> decode(std::string_view str, uint8_t base, const char *digits, const int8_t *map) noexcept;
 }

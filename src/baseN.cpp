@@ -36,68 +36,62 @@ namespace baseN
                             str.end());
         return sv.size() * std::log(base) / log256 + 1 + (str.size() - sv.size());
     }
-    void encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size, uint8_t base, const char *digits)
+    uint64_t encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size, uint8_t base, const char *digits)
     {
         std::vector<uint8_t> dv(std::find_if(data, data + data_size, [](uint8_t item)
                                              { return item != 0; }),
                                 data + data_size);
-        if (dv.size() == 0)
-        {
-            return;
-        }
         std::span<char> sv(str, str_size);
         auto sv_it = sv.rbegin();
         auto dv_it = dv.begin();
         auto quo_it = dv.begin();
         auto quo_it_last = dv.end();
-        uint16_t div = *dv_it++;
 
-        while ((dv[0] > base || quo_it_last > dv.begin() + 1) && sv_it < sv.rend() - 1)
+        if (dv.size() != 0)
         {
-            if (div < base)
+            uint16_t div = *dv_it++;
+            while ((dv[0] > base || quo_it_last > dv.begin() + 1) && sv_it < sv.rend() - 1)
             {
-                div <<= 8;
-                div += *dv_it++;
-            }
-            *quo_it++ = div / base;
-            div %= base;
-            while (dv_it < quo_it_last)
-            {
-                div <<= 8;
-                div += *dv_it++;
+                if (div < base)
+                {
+                    div <<= 8;
+                    div += *dv_it++;
+                }
                 *quo_it++ = div / base;
                 div %= base;
+                while (dv_it < quo_it_last)
+                {
+                    div <<= 8;
+                    div += *dv_it++;
+                    *quo_it++ = div / base;
+                    div %= base;
+                }
+                quo_it_last = quo_it;
+                dv_it = dv.begin();
+                quo_it = dv.begin();
+                *sv_it++ = digits[div];
+                div = *dv_it++;
             }
-            quo_it_last = quo_it;
-            dv_it = dv.begin();
-            quo_it = dv.begin();
             *sv_it++ = digits[div];
-            div = *dv_it++;
         }
-        *sv_it++ = digits[div];
         for (uint64_t i = 0; i < data_size - dv.size() && sv_it < sv.rend(); i++)
         {
             *sv_it++ = digits[0];
         }
+        return std::distance(sv_it, sv.rend());
     }
     std::string encode(std::span<const uint8_t> data, uint8_t base, const char *digits) noexcept
     {
         std::string str(baseN::sizeEncoded(data, base), ' ');
-        baseN::encode(data.data(), data.size(), str.data(), str.size(), base, digits);
-        str.erase(str.begin(), std::find_if(
-                                   str.begin(), str.end(), [](char ch)
-                                   { return ch != ' '; }));
+        uint64_t offset = baseN::encode(data.data(), data.size(), str.data(), str.size(), base, digits);
+        str.erase(str.begin(), str.begin() + offset);
         return str;
     }
-    void decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size, uint8_t base, const char *digits, const int8_t *map)
+    uint64_t decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size, uint8_t base, const char *digits, const int8_t *map)
     {
         std::string_view sv(std::find_if(str, str + str_size, [digits](char ch)
                                          { return ch != digits[0]; }),
-                            str_size);
-        if (sv.size() == 0)
-        {
-            return;
-        }
+                            str + str_size);
         if (!baseN::isValid(sv, map))
         {
             throw std::logic_error("baseN::decode: out of digits map");
@@ -108,27 +102,37 @@ namespace baseN
         auto quo_it_last = dv.rbegin() + 1;
         uint16_t div;
 
-        *quo_it = map[(int8_t)*sv_it++];
-        while (sv_it < sv.end())
+        if (sv.size() != 0)
         {
-            div = map[(int8_t)*sv_it++];
-            while (quo_it < quo_it_last && quo_it < dv.rend() - 1)
+            *quo_it = map[(int8_t)*sv_it++];
+            while (sv_it < sv.end())
             {
-                div += *quo_it * base;
-                *quo_it++ = div;
-                div >>= 8;
+                div = map[(int8_t)*sv_it++];
+                while (quo_it < quo_it_last && quo_it < dv.rend() - 1)
+                {
+                    div += *quo_it * base;
+                    *quo_it++ = div;
+                    div >>= 8;
+                }
+                if (div != 0)
+                {
+                    *quo_it++ = div;
+                }
+                quo_it_last = quo_it;
+                quo_it = dv.rbegin();
             }
-            *quo_it++ = div;
-            quo_it_last = quo_it;
-            quo_it = dv.rbegin();
         }
+        for (uint64_t i = 0; i < str_size - sv.size() && quo_it_last < dv.rend(); i++)
+        {
+            *quo_it_last++ = 0;
+        }
+        return std::distance(quo_it_last, dv.rend());
     }
     std::vector<uint8_t> decode(std::string_view str, uint8_t base, const char *digits, const int8_t *map) noexcept
     {
         std::vector<uint8_t> data(baseN::sizeDecoded(str, base, digits));
-        baseN::decode(str.data(), str.size(), data.data(), data.size(), base, digits, map);
-        data.erase(data.begin(), std::find_if(data.begin(), data.end(), [](uint8_t item)
-                                              { return item != 0; }));
+        uint64_t offset = baseN::decode(str.data(), str.size(), data.data(), data.size(), base, digits, map);
+        data.erase(data.begin(), data.begin() + offset);
         return data;
     }
 }
