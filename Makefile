@@ -122,4 +122,4 @@ ${BINDIR}/%${-g}: ${TESTDIR}/%.cpp ${patsubst %, ${OBJDIR}/%${-g}.o, ${OBJS}}
 endif
 
 ${DIRS}:
-	mkdir $@
+	mkdir -p $@
