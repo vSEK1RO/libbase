@@ -99,11 +99,12 @@ namespace baseN
         std::span<uint8_t> dv(data, data_size);
         auto sv_it = sv.begin();
         auto quo_it = dv.rbegin();
-        auto quo_it_last = dv.rbegin() + 1;
+        auto quo_it_last = dv.rbegin();
         uint16_t div;
 
         if (sv.size() != 0)
         {
+            quo_it_last++;
             *quo_it = map[(int8_t)*sv_it++];
             while (sv_it < sv.end())
             {

@@ -41,6 +41,7 @@ std::vector<std::pair<std::string, std::string>> tests = {
     {"KyKX", "387ae2"},
     {"KyKXa", "0ccbd755"},
     {"KyKXaa", "02e62ec963"},
+    {"111KyKX", "000000387ae2"},
     {"4uqWDRyJZUpS6KKwLAiitndmv7TPFt2bfxVVfhJhgTn3Rh6aQtGHQY6PhhNDpCwSNU8a",
      "057902f9cebebb68879911002aae743280140a78c4a077405b057902f9cebebb68879911002aae743280140a78c4a077405b"},
 };
