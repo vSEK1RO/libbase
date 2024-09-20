@@ -1,3 +1,0 @@
-[submodule "distrib/arch"]
-	path = distrib/arch
-	url = https://aur.archlinux.org/libbase.git

@@ -1,5 +1,5 @@
-#include <base/hash/sha256.hpp>
-#include <base/hex.hpp>
+#include <basen/hash/sha256.hpp>
+#include <basen/hex.hpp>
 #include <gtest/gtest.h>
 
 using namespace hash;

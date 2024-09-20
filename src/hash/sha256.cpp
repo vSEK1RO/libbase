@@ -15,7 +15,7 @@
 #include <memory.h>
 #include <stdlib.h>
 
-#include <base/hash/sha256.hpp>
+#include <basen/hash/sha256.hpp>
 
 #define ROTLEFT(a,b) (((a) << (b)) | ((a) >> (32-(b))))
 #define ROTRIGHT(a,b) (((a) >> (b)) | ((a) << (32-(b))))

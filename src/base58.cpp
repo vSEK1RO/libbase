@@ -1,8 +1,8 @@
 #include <stdexcept>
 
-#include <base/base58.hpp>
-#include <base/baseN.hpp>
-#include <base/hash/sha256.hpp>
+#include <basen/base58.hpp>
+#include <basen/baseN.hpp>
+#include <basen/hash/sha256.hpp>
 
 namespace base58
 {

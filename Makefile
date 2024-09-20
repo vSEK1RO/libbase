@@ -7,7 +7,7 @@ USRDIR ?= /usr
 .PHONY: build i install uni uninstall\
 		tools library tests clean
 
-LIB = base
+LIB = basen
 OBJS =\
 	hex\
 	baseN\

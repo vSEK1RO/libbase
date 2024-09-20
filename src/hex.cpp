@@ -1,8 +1,8 @@
 #include <limits>
 #include <stdexcept>
 
-#include <base/baseN.hpp>
-#include <base/hex.hpp>
+#include <basen/baseN.hpp>
+#include <basen/hex.hpp>
 
 namespace hex
 {

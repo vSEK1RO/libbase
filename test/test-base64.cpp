@@ -1,7 +1,7 @@
 #include <utility>
 
-#include <base/base64.hpp>
-#include <base/hex.hpp>
+#include <basen/base64.hpp>
+#include <basen/hex.hpp>
 #include <gtest/gtest.h>
 
 using namespace base64;

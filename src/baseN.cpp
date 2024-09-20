@@ -3,7 +3,7 @@
 #include <limits>
 #include <stdexcept>
 
-#include <base/baseN.hpp>
+#include <basen/baseN.hpp>
 
 static constexpr auto log256 = std::log(256);
 

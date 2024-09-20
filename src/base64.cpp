@@ -2,8 +2,8 @@
 #include <limits>
 #include <stdexcept>
 
-#include <base/base64.hpp>
-#include <base/baseN.hpp>
+#include <basen/base64.hpp>
+#include <basen/baseN.hpp>
 
 namespace base64
 {

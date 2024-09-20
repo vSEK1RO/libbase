@@ -1,8 +1,8 @@
 #include <utility>
 
-#include <base/base58.hpp>
-#include <base/baseN.hpp>
-#include <base/hex.hpp>
+#include <basen/base58.hpp>
+#include <basen/baseN.hpp>
+#include <basen/hex.hpp>
 #include <gtest/gtest.h>
 
 using namespace baseN;
