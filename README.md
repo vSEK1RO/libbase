@@ -1,21 +1,21 @@
-<img style="height: 40px; width: 100%; object-fit: contain;" src="https://i.imgur.com/ZOisFIu.png" />
+<p align="center"> <img style="height: 40px" src="https://i.imgur.com/ZOisFIu.png" /> </p>
 
-<p style="text-align: center;"> c++ encoding/decoding from arbitrary base </p>
+<p align="center"> c++ encoding/decoding from arbitrary base </p>
 
-<div style="display: flex; flex-direction: row; justify-content: center; gap: 8px;">
+<p align="center">
     <a href="https://repology.org/project/libbasen/versions">
         <img src="https://repology.org/badge/tiny-repos/libbasen.svg" alt="Packaging status">
     </a>
     <a href="https://repology.org/project/libbasen/versions">
         <img src="https://repology.org/badge/latest-versions/libbasen.svg" alt="latest packaged version(s)">
     </a>
-</div>
+</p>
 
 ---
 
 ## Contents
-[Installation](#installation)
-[Contributing](#contributing)
+- [Installation](#installation)
+- [Contributing](#contributing)
 
 ---
 
@@ -38,7 +38,7 @@ For build with with debug flags:
 ```
 make -j $(nproc) DEBUG=
 ```
-For build tests:
+For build tests (needed gtest package as dependency):
 ```
 make tests -j $(nproc) DEBUG=
 ```
