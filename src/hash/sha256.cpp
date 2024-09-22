@@ -174,7 +174,7 @@ namespace hash
 	}
 	std::vector<uint8_t> sha256(std::span<const uint8_t> data) noexcept
 	{
-		std::vector<uint8_t> hash(SHA256_DIGEST_LENGTH);
+		std::vector<uint8_t> hash(32);
 		sha256(data.data(), data.size(), hash.data());
 		return hash;
 	}
