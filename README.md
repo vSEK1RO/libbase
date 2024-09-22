@@ -12,6 +12,7 @@ c++ encoding/decoding from arbitrary base
 ## Contents
 
 - [Installation](#installation)
+- [Documentation](#documentation)
 - [Contributing](#contributing)
 
 ## Installation
@@ -41,6 +42,10 @@ And also flag for dynamic linking (if possible):
 ```
 make tools -j $(nproc) SHARED=
 ```
+
+## Documentation
+
+Available [here](https://vsek1ro.github.io/libbasen)
 
 ## Contributing
 
