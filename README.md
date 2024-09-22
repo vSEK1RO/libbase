@@ -9,13 +9,10 @@ c++ encoding/decoding from arbitrary base
     <img src="https://repology.org/badge/latest-versions/libbasen.svg" alt="latest packaged version(s)">
 </a>
 
----
-
 ## Contents
+
 - [Installation](#installation)
 - [Contributing](#contributing)
-
----
 
 ## Installation
 
@@ -45,8 +42,6 @@ And also flag for dynamic linking (if possible):
 make tools -j $(nproc) SHARED=
 ```
 
----
-
 ## Contributing
 
 Main branch is under protection rules, so you should create pull request. After merging will be runned [authors.sh](https://github.com/vSEK1RO/libbasen/blob/main/authors.sh) for adding all contributors usernames and their number of commits to [AUTHORS](https://github.com/vSEK1RO/libbasen/blob/main/AUTHORS) file.
@@ -55,7 +50,5 @@ Now we would like to implement the following features:
 - Base32
 - BCH
 - Bech32
-
----
 
 [⬆️ Contents](#contents)
