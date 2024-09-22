@@ -1,15 +1,13 @@
-<p align="center"> <img style="height: 40px" src="https://i.imgur.com/ZOisFIu.png" /> </p>
+# libbasen
 
-<p align="center"> c++ encoding/decoding from arbitrary base </p>
+c++ encoding/decoding from arbitrary base
 
-<p align="center">
-    <a href="https://repology.org/project/libbasen/versions">
-        <img src="https://repology.org/badge/tiny-repos/libbasen.svg" alt="Packaging status">
-    </a>
-    <a href="https://repology.org/project/libbasen/versions">
-        <img src="https://repology.org/badge/latest-versions/libbasen.svg" alt="latest packaged version(s)">
-    </a>
-</p>
+<a href="https://repology.org/project/libbasen/versions">
+    <img src="https://repology.org/badge/tiny-repos/libbasen.svg" alt="Packaging status">
+</a>
+<a href="https://repology.org/project/libbasen/versions">
+    <img src="https://repology.org/badge/latest-versions/libbasen.svg" alt="latest packaged version(s)">
+</a>
 
 ---
 
@@ -60,4 +58,4 @@ Now we would like to implement the following features:
 
 ---
 
-[:arrow_up:Contents](#contents)
+[⬆️ Contents](#contents)

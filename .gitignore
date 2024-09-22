@@ -42,6 +42,7 @@ BUILD.bazel
 bin
 obj
 lib
+doc
 
 # IDE
 .vscode

@@ -5,7 +5,7 @@ DEBUG ?= false
 USRDIR ?= /usr
 
 .PHONY: build i install uni uninstall\
-		tools library tests clean
+		tools library tests docs clean
 
 LIB = basen
 OBJS =\
@@ -76,6 +76,9 @@ uninstall:
 	rm -f ${patsubst %, ${USRINC}/${LIB}/%.hpp, ${OBJS}}
 	rm -f ${patsubst %, ${USRLIB}/lib${LIB}${-g}%, .so .a}
 	rm -f ${patsubst %, ${USRBIN}/%${-g}, ${TOOLS}}
+
+docs:
+	doxygen Doxyfile
 
 clean:
 	rm -rf ${OBJDIR}/* ${LIBDIR}/* ${BINDIR}/*
