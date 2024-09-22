@@ -32,6 +32,7 @@ namespace baseN
      * @param base from 1 to 255
      * @param digits char[base] array of digits
      * @return estimated size after decoding
+     * @throw std::overflow_error if if there is an overflow
      */
     uint64_t sizeDecoded(std::string_view str, uint8_t base, const char *digits) noexcept;
 

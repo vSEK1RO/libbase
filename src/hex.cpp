@@ -50,7 +50,7 @@ namespace hex
     {
         if (str_size < hex::sizeEncoded(std::span<const uint8_t>(data, data_size)))
         {
-            throw std::logic_error("hex::encode: not enough allocated length");
+            throw std::length_error("hex::encode: not enough allocated length");
         }
         for (uint64_t i = 0; i < data_size; i++)
         {
@@ -72,7 +72,7 @@ namespace hex
         }
         if (data_size < hex::sizeDecoded(std::string_view(str, str_size)))
         {
-            throw std::logic_error("hex::decode: not enough allocated length");
+            throw std::length_error("hex::decode: not enough allocated length");
         }
         if (!hex::isValid(str, str_size))
         {
