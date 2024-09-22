@@ -43,17 +43,17 @@ namespace base58
     {
         return baseN::sizeDecoded(str, 58, digits);
     }
-    void encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size) noexcept
+    uint64_t encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size) noexcept
     {
-        baseN::encode(data, data_size, str, str_size, 58, digits);
+        return baseN::encode(data, data_size, str, str_size, 58, digits);
     }
     std::string encode(std::span<const uint8_t> data) noexcept
     {
         return baseN::encode(data, 58, digits);
     }
-    void decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size) noexcept
+    uint64_t decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size) noexcept
     {
-        baseN::decode(str, str_size, data, data_size, 58, digits, map);
+        return baseN::decode(str, str_size, data, data_size, 58, digits, map);
     }
     std::vector<uint8_t> decode(std::string_view str) noexcept
     {

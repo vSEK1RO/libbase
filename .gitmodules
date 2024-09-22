@@ -1,0 +1,6 @@
+[submodule "distrib/arch"]
+	path = distrib/arch
+	url = https://aur.archlinux.org/libbasen.git
+[submodule "deps/doxygen-awesome-css"]
+	path = deps/doxygen-awesome-css
+	url = https://github.com/jothepro/doxygen-awesome-css.git

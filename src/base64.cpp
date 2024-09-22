@@ -64,7 +64,7 @@ namespace base64
     {
         if (str_size < base64::sizeEncoded(std::span<const uint8_t>(data, data_size)))
         {
-            throw std::logic_error("base64::encode: not enough allocated length");
+            throw std::length_error("base64::encode: not enough allocated length");
         }
         for (uint64_t i = 0; i < data_size / 3; i++)
         {
@@ -106,7 +106,7 @@ namespace base64
         std::string_view sv(str, str_size);
         if (data_size < base64::sizeDecoded(sv))
         {
-            throw std::logic_error("base64::decode: not enough allocated length");
+            throw std::length_error("base64::decode: not enough allocated length");
         }
         if (!base64::isValid(sv))
         {
