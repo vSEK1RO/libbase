@@ -29,9 +29,11 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Install Doxygen
-        run: sudo apt install doxygen
+        run: |
+          wget https://github.com/doxygen/doxygen/releases/download/Release_1_12_0/doxygen-1.12.0.linux.bin.tar.gz
+          tar -xf doxygen-1.12.0.linux.bin.tar.gz
       - name: Generate docs
-        run: doxygen
+        run: ./doxygen-1.12.0/bin/doxygen
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
