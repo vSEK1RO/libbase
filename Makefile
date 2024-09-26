@@ -84,8 +84,7 @@ docs:
 
 cover: ${DIRS} ${patsubst %, ${BINDIR}/%${-g}-cov, ${TESTS}}
 	${patsubst %, ./${BINDIR}/%${-g}-cov;, ${TESTS}}
-	gcovr --html-nested cov/index.html
-	gcovr
+	gcovr --html-nested cov/index.html --txt --exclude-throw-branches
 
 ${OBJDIR}/%${-g}-cov.o: ${SRCDIR}/%.cpp ${INCDIR}/${LIB}/%.hpp
 	${CC} -o $@ -c $< -I${INCDIR} ${-l} ${CFLAGS} --coverage

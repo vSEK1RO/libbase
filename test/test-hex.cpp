@@ -1,21 +1,28 @@
+#include <utility>
+
 #include <basen/hex.hpp>
 #include <gtest/gtest.h>
 
 using namespace hex;
 
+TEST(hex, isValid)
+{
+    std::vector<std::pair<bool, std::string>> tests = {
+        {true, "1234"},
+        {false, "!@/"},
+    };
+    for (auto it : tests)
+        EXPECT_EQ(it.first, isValid(it.second));
+}
 TEST(hex, encode)
 {
     std::vector<uint8_t> data = {0x74, 0x65, 0x73, 0x74};
     EXPECT_EQ("74657374", encode(data));
-    try
-    {
-        std::string str = "";
-        encode(data.data(), data.size(), str.data(), str.size());
-    }
-    catch (const std::exception &e)
-    {
-        EXPECT_STREQ(e.what(), "hex::encode: not enough allocated length");
-    }
+
+    std::string str = "";
+    EXPECT_THROW(encode(data.data(), std::numeric_limits<uint64_t>::max(), str.data(), str.size()), std::overflow_error);
+    EXPECT_THROW(encode(data.data(), data.size(), str.data(), str.size()), std::length_error);
+    EXPECT_NO_THROW(encode(data.data(), 0, str.data(), str.size()));
 }
 TEST(hex, encode_1e7)
 {
@@ -26,15 +33,11 @@ TEST(hex, decode)
 {
     std::vector<uint8_t> data = {0x61, 0x6e, 0x6f};
     EXPECT_EQ(decode("616e6f"), data);
-    try
-    {
-        std::string str = "";
-        decode("616", 3, data.data(), data.size());
-    }
-    catch (const std::exception &e)
-    {
-        EXPECT_STREQ(e.what(), "hex::decode: isn't hex");
-    }
+
+    EXPECT_THROW(decode("FFF", 3, data.data(), data.size()), std::logic_error);
+    EXPECT_THROW(decode("!@#!", 4, data.data(), data.size()), std::logic_error);
+    EXPECT_THROW(decode("FF", 2, data.data(), 0), std::length_error);
+    EXPECT_NO_THROW(decode("", 0, data.data(), 0));
 }
 TEST(hex, decode_1e7)
 {
