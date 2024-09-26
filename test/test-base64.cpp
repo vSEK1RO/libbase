@@ -28,6 +28,12 @@ TEST(base64, encode)
 {
     for (auto it : tests)
         EXPECT_EQ(it.first, encode(hex::decode(it.second)));
+
+    std::vector<uint8_t> data = {0x74, 0x65, 0x73, 0x74};
+    std::string str = "";
+    EXPECT_THROW(encode(data.data(), std::numeric_limits<uint64_t>::max(), str.data(), str.size()), std::overflow_error);
+    EXPECT_THROW(encode(data.data(), data.size(), str.data(), str.size()), std::length_error);
+    EXPECT_NO_THROW(encode(data.data(), 0, str.data(), str.size()));
 }
 TEST(base64, encode_1e7)
 {
@@ -38,6 +44,12 @@ TEST(base64, decode)
 {
     for (auto it : tests)
         EXPECT_EQ(hex::encode(decode(it.first)), it.second);
+
+    std::vector<uint8_t> data = {0x61, 0x6e, 0x6f};
+    EXPECT_THROW(decode("FFF", 3, data.data(), data.size()), std::logic_error);
+    EXPECT_THROW(decode("!@#!", 4, data.data(), data.size()), std::logic_error);
+    EXPECT_THROW(decode("FF==", 2, data.data(), 0), std::length_error);
+    EXPECT_NO_THROW(decode(""       , 0, data.data(), 0));
 }
 TEST(base64, decode_1e7)
 {

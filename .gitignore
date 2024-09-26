@@ -43,6 +43,7 @@ bin
 obj
 lib
 doc
+cov
 
 # IDE
 .vscode

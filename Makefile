@@ -5,7 +5,7 @@ DEBUG ?= false
 USRDIR ?= /usr
 
 .PHONY: build i install uni uninstall\
-		tools library tests docs clean
+		tools library tests docs cov clean
 
 LIB = basen
 OBJS =\
@@ -59,6 +59,8 @@ DIRS =\
 	${OBJDIR}\
 	${OBJDIR}/hash\
 	${LIBDIR}\
+	doc\
+	cov
 
 build: library tools
 
@@ -80,8 +82,19 @@ uninstall:
 docs:
 	doxygen Doxyfile
 
+cover: ${DIRS} ${patsubst %, ${BINDIR}/%${-g}-cov, ${TESTS}}
+	rm -f **/*.gcda
+	${patsubst %, ./${BINDIR}/%${-g}-cov;, ${TESTS}}
+	gcovr --html-nested cov/index.html --txt --exclude-throw-branches
+
+${OBJDIR}/%${-g}-cov.o: ${SRCDIR}/%.cpp ${INCDIR}/${LIB}/%.hpp
+	${CC} -o $@ -c $< -I${INCDIR} ${-l} ${CFLAGS} --coverage
+
+${BINDIR}/%${-g}-cov: ${TESTDIR}/%.cpp ${patsubst %, ${OBJDIR}/%${-g}-cov.o, ${OBJS}}
+	${CC} -o $@ $^ -I${INCDIR} ${-l} -lgtest ${CFLAGS} --coverage
+
 clean:
-	rm -rf ${OBJDIR}/* ${LIBDIR}/* ${BINDIR}/*
+	rm -rf ${DIRS}
 
 ifneq (${OBJS},)
 

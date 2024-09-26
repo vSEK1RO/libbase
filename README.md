@@ -30,18 +30,6 @@ Uninstall:
 ```
 sudo make uni USRDIR=(Your installation dir)
 ```
-For build with with debug flags:
-```
-make -j $(nproc) DEBUG=
-```
-For build tests (needed gtest package as dependency):
-```
-make tests -j $(nproc) DEBUG=
-```
-And also flag for dynamic linking (if possible):
-```
-make tools -j $(nproc) SHARED=
-```
 
 ## Documentation
 
@@ -55,5 +43,18 @@ Now we would like to implement the following features:
 - Base32
 - BCH
 - Bech32
+
+For build with with debug flags:
+```
+make -j $(nproc) DEBUG=
+```
+For build tests (needed gtest package as dependency):
+```
+make tests -j $(nproc) DEBUG=
+```
+For generating coverage:
+```
+make cover -j $(nproc) DEBUG=
+```
 
 [⬆️ Contents](#contents)
