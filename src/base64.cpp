@@ -74,25 +74,22 @@ namespace base64
             str[i * 4 + 3] = digits[data[i * 3 + 2] & 0x3F];
         }
         uint64_t last_idx = data_size / 3 * 4;
-        if (last_idx + 3 < str_size)
+        switch (data_size % 3)
         {
-            switch (data_size % 3)
-            {
-            case 1:
-                str[last_idx] = digits[data[data_size - 1] >> 2];
-                str[last_idx + 1] = digits[data[data_size - 1] << 4 & 0x30];
-                str[last_idx + 2] = '=';
-                str[last_idx + 3] = '=';
-                break;
-            case 2:
-                str[last_idx] = digits[data[data_size - 2] >> 2];
-                str[last_idx + 1] = digits[(data[data_size - 2] << 4 | data[data_size - 1] >> 4) & 0x3F];
-                str[last_idx + 2] = digits[data[data_size - 1] & 0x0F];
-                str[last_idx + 3] = '=';
-                break;
-            default:
-                break;
-            }
+        case 1:
+            str[last_idx] = digits[data[data_size - 1] >> 2];
+            str[last_idx + 1] = digits[data[data_size - 1] << 4 & 0x30];
+            str[last_idx + 2] = '=';
+            str[last_idx + 3] = '=';
+            break;
+        case 2:
+            str[last_idx] = digits[data[data_size - 2] >> 2];
+            str[last_idx + 1] = digits[(data[data_size - 2] << 4 | data[data_size - 1] >> 4) & 0x3F];
+            str[last_idx + 2] = digits[data[data_size - 1] & 0x0F];
+            str[last_idx + 3] = '=';
+            break;
+        default:
+            break;
         }
     }
     std::string encode(std::span<const uint8_t> data) noexcept

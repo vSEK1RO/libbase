@@ -83,6 +83,7 @@ docs:
 	doxygen Doxyfile
 
 cover: ${DIRS} ${patsubst %, ${BINDIR}/%${-g}-cov, ${TESTS}}
+	rm -f **/*.gcda
 	${patsubst %, ./${BINDIR}/%${-g}-cov;, ${TESTS}}
 	gcovr --html-nested cov/index.html --txt --exclude-throw-branches
 
