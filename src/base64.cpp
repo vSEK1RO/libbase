@@ -85,7 +85,7 @@ namespace base64
         case 2:
             str[last_idx] = digits[data[data_size - 2] >> 2];
             str[last_idx + 1] = digits[(data[data_size - 2] << 4 | data[data_size - 1] >> 4) & 0x3F];
-            str[last_idx + 2] = digits[data[data_size - 1] & 0x0F];
+            str[last_idx + 2] = digits[data[data_size - 1] << 2 & 0x3F];
             str[last_idx + 3] = '=';
             break;
         default:
