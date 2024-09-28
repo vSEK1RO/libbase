@@ -59,8 +59,6 @@ DIRS =\
 	${OBJDIR}\
 	${OBJDIR}/hash\
 	${LIBDIR}\
-	doc\
-	cov
 
 build: library tools
 
@@ -91,10 +89,10 @@ ${OBJDIR}/%${-g}-cov.o: ${SRCDIR}/%.cpp ${INCDIR}/${LIB}/%.hpp
 	${CC} -o $@ -c $< -I${INCDIR} ${-l} ${CFLAGS} --coverage
 
 ${BINDIR}/%${-g}-cov: ${TESTDIR}/%.cpp ${patsubst %, ${OBJDIR}/%${-g}-cov.o, ${OBJS}}
-	${CC} -o $@ $^ -I${INCDIR} ${-l} -lgtest ${CFLAGS} --coverage
+	${CC} -o $@ $^ -I${INCDIR} ${-l} -lgtest -lgcov ${CFLAGS}
 
 clean:
-	rm -rf ${DIRS}
+	rm -rf ${DIRS} doc cov
 
 ifneq (${OBJS},)
 

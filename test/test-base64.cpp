@@ -21,8 +21,8 @@ TEST(base64, isValid)
 std::vector<std::pair<std::string, std::string>> tests = {
     {"", ""},
     {"BKUEpQ==", "04a504a5"},
-    {"BKUEpQA=", "04a504a500"},
-    {"BKUEpQAA", "04a504a50000"},
+    {"aGVsbG8=", "68656c6c6f"},
+    {"aGVsbG9v", "68656c6c6f6f"},
 };
 TEST(base64, encode)
 {
@@ -49,7 +49,7 @@ TEST(base64, decode)
     EXPECT_THROW(decode("FFF", 3, data.data(), data.size()), std::logic_error);
     EXPECT_THROW(decode("!@#!", 4, data.data(), data.size()), std::logic_error);
     EXPECT_THROW(decode("FF==", 2, data.data(), 0), std::length_error);
-    EXPECT_NO_THROW(decode(""       , 0, data.data(), 0));
+    EXPECT_NO_THROW(decode("", 0, data.data(), 0));
 }
 TEST(base64, decode_1e7)
 {
