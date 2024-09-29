@@ -15,7 +15,7 @@ OBJS =\
 	base64\
 	hash/sha256\
 
-TOOLS =\
+TOOLS = ${LIB}
 
 TESTS =\
 	test-hex\
