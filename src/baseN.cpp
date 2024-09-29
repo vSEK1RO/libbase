@@ -121,13 +121,13 @@ namespace baseN
             while (sv_it < sv.end())
             {
                 div = map[(int8_t)*sv_it++];
-                while (quo_it < quo_it_last && quo_it < dv.rend() - 1)
+                while (quo_it < quo_it_last && quo_it < dv.rend())
                 {
                     div += *quo_it * base;
                     *quo_it++ = div;
                     div >>= 8;
                 }
-                if (div != 0)
+                if (div != 0 && quo_it < dv.rend())
                 {
                     *quo_it++ = div;
                 }
