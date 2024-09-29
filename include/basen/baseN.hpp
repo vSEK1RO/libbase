@@ -8,6 +8,13 @@
 namespace baseN
 {
     /**
+     * @param digits char[base] array of digits
+     * @param digits_size size of digits array. Equals to base
+     * @param map [out] int8_t[256] array, where at an index equal to the value of the symbol is the index of this symbol in the digits array. -1 if there is no symbol
+     * @throw std::logic_error if alphabet contain same chars
+     */
+    void digitsMap(const char *digits, uint8_t digits_size, int8_t *map);
+    /**
      * @param str [in] pointer to string
      * @param str_size
      * @param map int8_t[256] array, where at an index equal to the value of the symbol is the index of this symbol in the digits array. -1 if there is no symbol

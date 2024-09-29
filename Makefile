@@ -83,6 +83,7 @@ docs:
 cover: ${DIRS} ${patsubst %, ${BINDIR}/%${-g}-cov, ${TESTS}}
 	rm -f **/*.gcda
 	${patsubst %, ./${BINDIR}/%${-g}-cov;, ${TESTS}}
+	mkdir cov
 	gcovr --html-nested cov/index.html --txt --exclude-throw-branches
 
 ${OBJDIR}/%${-g}-cov.o: ${SRCDIR}/%.cpp ${INCDIR}/${LIB}/%.hpp

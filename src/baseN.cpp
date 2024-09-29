@@ -9,6 +9,18 @@ static constexpr auto log256 = std::log(256);
 
 namespace baseN
 {
+    void digitsMap(const char *digits, uint8_t digits_size, int8_t *map)
+    {
+        std::fill(map, map + 256, -1);
+        for (uint8_t i = 0; i < digits_size; i++)
+        {
+            if (map[(int8_t)digits[i]] != -1)
+            {
+                throw std::logic_error("baseN::digitsMap: alphabet contain same chars");
+            }
+            map[(int8_t)digits[i]] = i;
+        }
+    }
     bool isValid(const char *str, uint64_t str_size, const int8_t *map) noexcept
     {
         return std::all_of(str, str + str_size, [map](char ch)
