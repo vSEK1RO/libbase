@@ -69,6 +69,10 @@ namespace base58
     std::vector<uint8_t> decodeCheck(std::string_view str)
     {
         std::vector<uint8_t> buff(base58::decode(str));
+        if (buff.size() < 4)
+        {
+            throw std::logic_error("base58::decodeCheck: incorrect padding");
+        }
         std::span<uint8_t> data(buff.begin(), buff.end() - 4);
         std::span<uint8_t> dhash(buff.end() - 4, buff.end());
         if (!std::equal(dhash.begin(), dhash.end(), hash::sha256(hash::sha256(data)).begin()))
