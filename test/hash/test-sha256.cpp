@@ -11,7 +11,7 @@ TEST(hash, sha256)
 TEST(hash, sha256_1e4)
 {
     std::vector<uint8_t> data(32);
-    for (uint64_t i = 0; i < 1e4; i++)
+    for (size_t i = 0; i < 1e4; i++)
     {
         sha256(data);
     }

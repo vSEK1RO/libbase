@@ -2,11 +2,20 @@
 
 #include <basen/base58.hpp>
 #include <basen/baseN.hpp>
+#include <basen/Exception.hpp>
 #include <basen/hex.hpp>
 #include <gtest/gtest.h>
 
 using namespace baseN;
 
+TEST(baseN, digitsMap)
+{
+    uint8_t map[256];
+    digitsMap(base58::digits, 58, map);
+    EXPECT_TRUE(std::equal(map, map + 256, base58::map));
+
+    EXPECT_THROW(digitsMap("11", 2, map), basen::Exception);
+}
 TEST(baseN, isValid)
 {
     std::vector<std::pair<bool, std::string>> tests = {
@@ -18,21 +27,25 @@ TEST(baseN, isValid)
 }
 TEST(baseN, sizeEncoded)
 {
-    std::vector<std::pair<uint64_t, std::string>> tests = {
+    std::vector<std::pair<size_t, std::string>> tests = {
         {6, "12341234"},
         {5, "00000000"},
     };
-    for (auto it : tests)
+       for (auto it : tests)
         EXPECT_EQ(it.first, sizeEncoded(hex::decode(it.second), 58));
+
+    EXPECT_THROW(sizeEncoded(hex::decode(""), 0), basen::Exception);
 }
 TEST(baseN, sizeDecoded)
 {
-    std::vector<std::pair<uint64_t, std::string>> tests = {
+    std::vector<std::pair<size_t, std::string>> tests = {
         {3, "qwer"},
         {5, "1111"},
     };
     for (auto it : tests)
         EXPECT_EQ(it.first, sizeDecoded(it.second, 58, base58::digits));
+
+    EXPECT_THROW(sizeDecoded("", 0, base58::digits), basen::Exception);
 }
 std::vector<std::pair<std::string, std::string>> tests = {
     {"", ""},
@@ -60,6 +73,8 @@ TEST(baseN, decode)
 {
     for (auto it : tests)
         EXPECT_EQ(hex::encode(decode(it.first, 58, base58::digits, base58::map)), it.second);
+
+    EXPECT_THROW(decode("!@#", 58, base58::digits, base58::map), basen::Exception);
 }
 TEST(baseN, decode_1e3)
 {

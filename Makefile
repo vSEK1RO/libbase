@@ -14,8 +14,9 @@ OBJS =\
 	base58\
 	base64\
 	hash/sha256\
+	Exception
 
-TOOLS =\
+TOOLS = ${LIB}
 
 TESTS =\
 	test-hex\
@@ -23,6 +24,7 @@ TESTS =\
 	test-base58\
 	test-base64\
 	hash/test-sha256\
+	test-Exception
 
 ifeq (${origin CC}, default)
 CC = g++
@@ -83,6 +85,7 @@ docs:
 cover: ${DIRS} ${patsubst %, ${BINDIR}/%${-g}-cov, ${TESTS}}
 	rm -f **/*.gcda
 	${patsubst %, ./${BINDIR}/%${-g}-cov;, ${TESTS}}
+	mkdir -p cov
 	gcovr --html-nested cov/index.html --txt --exclude-throw-branches
 
 ${OBJDIR}/%${-g}-cov.o: ${SRCDIR}/%.cpp ${INCDIR}/${LIB}/%.hpp

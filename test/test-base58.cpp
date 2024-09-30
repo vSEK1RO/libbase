@@ -1,6 +1,7 @@
 #include <utility>
 
 #include <basen/base58.hpp>
+#include <basen/Exception.hpp>
 #include <basen/hex.hpp>
 #include <gtest/gtest.h>
 
@@ -18,14 +19,7 @@ TEST(base58, encodeCheck)
 TEST(base58, decodeCheck)
 {
     EXPECT_EQ(test.first, hex::encode(decodeCheck(test.second)));
-    try
-    {
-        decodeCheck("incorrect");
-    }
-    catch (const std::exception &e)
-    {
-        EXPECT_STREQ(e.what(), "base58::decodeCheck: checksum incorrect");
-    }
+    EXPECT_THROW(decodeCheck("incorrect"), basen::Exception);
 }
 
 int main(int argc, char **argv)

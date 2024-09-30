@@ -13,6 +13,7 @@ c++ encoding/decoding from arbitrary base
 
 - [Installation](#installation)
 - [Documentation](#documentation)
+- [Usage](#usage)
 - [Contributing](#contributing)
 
 ## Installation
@@ -34,6 +35,19 @@ sudo make uni USRDIR=(Your installation dir)
 ## Documentation
 
 Available [here](https://vsek1ro.github.io/libbasen)
+
+## Usage
+
+libbasen package provides `basen` cli tool. Below are examples of use:
+```
+echo "hello world" | basen -t hex > encoded.data
+```
+```
+basen -t hex -d < encoded.data > decoded.data
+```
+```
+echo "arbitrary alphabet" | basen -a "0123ABCD"
+```
 
 ## Contributing
 
