@@ -14,6 +14,7 @@ OBJS =\
 	base58\
 	base64\
 	hash/sha256\
+	Exception
 
 TOOLS = ${LIB}
 
@@ -23,6 +24,7 @@ TESTS =\
 	test-base58\
 	test-base64\
 	hash/test-sha256\
+	test-Exception
 
 ifeq (${origin CC}, default)
 CC = g++
