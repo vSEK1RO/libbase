@@ -4,6 +4,7 @@
 
 #include <basen/base64.hpp>
 #include <basen/baseN.hpp>
+#include <basen/Exception.hpp>
 
 namespace base64
 {
@@ -48,7 +49,7 @@ namespace base64
         size_t str_size = data.size() / 3;
         if (str_size > std::numeric_limits<size_t>::max() / 4)
         {
-            throw std::overflow_error("base64::sizeEncoded: overflow");
+            throw basen::Exception(basen::Exception::Code::OVERFLOW);
         }
         str_size = str_size * 4 + (data.size() % 3 ? 4 : 0);
         return str_size;
@@ -64,7 +65,7 @@ namespace base64
     {
         if (str_size < base64::sizeEncoded(std::span<const uint8_t>(data, data_size)))
         {
-            throw std::length_error("base64::encode: not enough allocated length");
+            throw basen::Exception(basen::Exception::Code::LENGTH);
         }
         for (size_t i = 0; i < data_size / 3; i++)
         {
@@ -92,7 +93,7 @@ namespace base64
             break;
         }
     }
-    std::string encode(std::span<const uint8_t> data) noexcept
+    std::string encode(std::span<const uint8_t> data)
     {
         std::string str(base64::sizeEncoded(data), ' ');
         base64::encode(data.data(), data.size(), str.data(), str.size());
@@ -103,18 +104,18 @@ namespace base64
         std::string_view sv(str, str_size);
         if (data_size < base64::sizeDecoded(sv))
         {
-            throw std::length_error("base64::decode: not enough allocated length");
+            throw basen::Exception(basen::Exception::Code::LENGTH);
         }
         if (!base64::isValid(sv))
         {
-            throw std::logic_error("base64::decode: out of digits map");
+            throw basen::Exception(basen::Exception::Code::OUT_OF_ALPH);
         }
         auto size = std::distance(sv.begin(), std::find_if(sv.rbegin(), sv.rend(), [](char ch)
                                                            { return ch != '='; })
                                                   .base());
         if (sv.size() % 4 != 0 || sv.size() - size > 2)
         {
-            throw std::logic_error("base64::decode: incorrect padding");
+            throw basen::Exception(basen::Exception::Code::PADDING);
         }
         for (auto i = 0; i < size / 4; i++)
         {
@@ -136,7 +137,7 @@ namespace base64
             break;
         }
     }
-    std::vector<uint8_t> decode(std::string_view str) noexcept
+    std::vector<uint8_t> decode(std::string_view str)
     {
         std::vector<uint8_t> data(base64::sizeDecoded(str));
         base64::decode(str.data(), str.size(), data.data(), data.size());
