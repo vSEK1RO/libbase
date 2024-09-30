@@ -2,6 +2,7 @@
 
 #include <basen/base58.hpp>
 #include <basen/baseN.hpp>
+#include <basen/Exception.hpp>
 #include <basen/hash/sha256.hpp>
 
 namespace base58
@@ -35,7 +36,7 @@ namespace base58
     {
         return baseN::isValid(str, map);
     }
-    size_t sizeEncoded(std::span<const uint8_t> data) noexcept
+    size_t sizeEncoded(std::span<const uint8_t> data)
     {
         return baseN::sizeEncoded(data, 58);
     }
@@ -43,23 +44,23 @@ namespace base58
     {
         return baseN::sizeDecoded(str, 58, digits);
     }
-    size_t encode(const uint8_t *data, size_t data_size, char *str, size_t str_size) noexcept
+    size_t encode(const uint8_t *data, size_t data_size, char *str, size_t str_size)
     {
         return baseN::encode(data, data_size, str, str_size, 58, digits);
     }
-    std::string encode(std::span<const uint8_t> data) noexcept
+    std::string encode(std::span<const uint8_t> data)
     {
         return baseN::encode(data, 58, digits);
     }
-    size_t decode(const char *str, size_t str_size, uint8_t *data, size_t data_size) noexcept
+    size_t decode(const char *str, size_t str_size, uint8_t *data, size_t data_size)
     {
         return baseN::decode(str, str_size, data, data_size, 58, digits, map);
     }
-    std::vector<uint8_t> decode(std::string_view str) noexcept
+    std::vector<uint8_t> decode(std::string_view str)
     {
         return baseN::decode(str, 58, digits, map);
     }
-    std::string encodeCheck(std::span<const uint8_t> data) noexcept
+    std::string encodeCheck(std::span<const uint8_t> data)
     {
         std::vector<uint8_t> buff(data.begin(), data.end()), dhash;
         dhash = hash::sha256(hash::sha256(data));
@@ -71,13 +72,13 @@ namespace base58
         std::vector<uint8_t> buff(base58::decode(str));
         if (buff.size() < 4)
         {
-            throw std::logic_error("base58::decodeCheck: incorrect padding");
+            throw basen::Exception(basen::Exception::Code::PADDING);
         }
         std::span<uint8_t> data(buff.begin(), buff.end() - 4);
         std::span<uint8_t> dhash(buff.end() - 4, buff.end());
         if (!std::equal(dhash.begin(), dhash.end(), hash::sha256(hash::sha256(data)).begin()))
         {
-            throw std::logic_error("base58::decodeCheck: checksum incorrect");
+            throw basen::Exception(basen::Exception::Code::CHECKSUM);
         }
         return std::vector<uint8_t>(data.begin(), data.end());
     }

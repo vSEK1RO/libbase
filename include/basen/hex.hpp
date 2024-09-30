@@ -14,7 +14,7 @@ namespace hex
     bool isValid(std::string_view str) noexcept;
 
     /**
-     * @throw basen::Exception(OVERFLOW) if if there is an overflow
+     * @throw basen::Exception(OVERFLOW) if there is an overflow
      */
     size_t sizeEncoded(std::span<const uint8_t> data);
     size_t sizeDecoded(std::string_view str) noexcept;
