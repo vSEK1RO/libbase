@@ -41,7 +41,7 @@ namespace basen
         if (isatty(fileno(stdin)))
 #endif
         {
-            throw std::logic_error("basen::getPipe: should use pipe syntax");
+            throw std::logic_error("should use pipe syntax ( | or < )");
         }
         else
         {
@@ -60,8 +60,9 @@ namespace basen
     }
     uint8_t error(const std::string &str, argparse::ArgumentParser &program) noexcept
     {
-        std::cerr << str << '\n';
-        std::cerr << program << '\n';
+        std::cerr << "\033[31merror:\t\033[0m"
+                  << str << "\n\n"
+                  << program << '\n';
         return 1;
     }
 }
@@ -102,48 +103,48 @@ int main(int argc, char *argv[])
     }
     catch (const std::exception &e)
     {
-        return basen::error("should use pipe syntax ( | or < )", program);
+        return basen::error(e.what(), program);
     }
-    if (program.is_used("-t"))
+    try
     {
-        auto type = program.get<std::string>("-t");
-        if (program.is_used("-d"))
+        if (program.is_used("-t"))
         {
-            auto data = (*basen::decoders.at(type))(str);
-            std::for_each(data.begin(), data.end(), [](uint8_t item)
-                          { std::cout << (char)item; });
-            std::cout << '\n';
+            auto type = program.get<std::string>("-t");
+            if (program.is_used("-d"))
+            {
+                auto data = (*basen::decoders.at(type))(str);
+                std::for_each(data.begin(), data.end(), [](uint8_t item)
+                              { std::cout << (char)item; });
+                std::cout << '\n';
+            }
+            else
+            {
+                std::span<uint8_t> dv((uint8_t *)str.data(), str.size());
+                std::cout << (*basen::encoders.at(type))(dv) << '\n';
+            }
         }
-        else
+        if (program.is_used("-a"))
         {
-            std::span<uint8_t> dv((uint8_t *)str.data(), str.size());
-            std::cout << (*basen::encoders.at(type))(dv) << '\n';
-        }
-    }
-    if (program.is_used("-a"))
-    {
-        auto alphabet = program.get<std::string>("-a");
-        uint8_t map[256];
-        try
-        {
+            auto alphabet = program.get<std::string>("-a");
+            uint8_t map[256];
             baseN::digitsMap(alphabet.data(), alphabet.size(), map);
+            if (program.is_used("-d"))
+            {
+                auto data = baseN::decode(str, alphabet.size(), alphabet.data(), map);
+                std::for_each(data.begin(), data.end(), [](uint8_t item)
+                              { std::cout << (char)item; });
+                std::cout << '\n';
+            }
+            else
+            {
+                std::span<uint8_t> dv((uint8_t *)str.data(), str.size());
+                std::cout << baseN::encode(dv, alphabet.size(), alphabet.data()) << '\n';
+            }
         }
-        catch (const std::exception &e)
-        {
-            return basen::error("alphabet contains same characters", program);
-        }
-        if (program.is_used("-d"))
-        {
-            auto data = baseN::decode(str, alphabet.size(), alphabet.data(), map);
-            std::for_each(data.begin(), data.end(), [](uint8_t item)
-                          { std::cout << (char)item; });
-            std::cout << '\n';
-        }
-        else
-        {
-            std::span<uint8_t> dv((uint8_t *)str.data(), str.size());
-            std::cout << baseN::encode(dv, alphabet.size(), alphabet.data()) << '\n';
-        }
+    }
+    catch (const basen::Exception &e)
+    {
+        return basen::error(e.message(), program);
     }
     return 0;
 }
