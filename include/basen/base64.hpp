@@ -8,7 +8,7 @@
 namespace base64
 {
     extern const char digits[65];
-    extern const int8_t map[256];
+    extern const uint8_t map[256];
 
     bool isValid(const char *str, size_t str_size) noexcept;
     bool isValid(std::string_view str) noexcept;

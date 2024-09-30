@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
     if (program.is_used("-a"))
     {
         auto alphabet = program.get<std::string>("-a");
-        int8_t map[256];
+        uint8_t map[256];
         try
         {
             baseN::digitsMap(alphabet.data(), alphabet.size(), map);

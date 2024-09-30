@@ -9,24 +9,24 @@ static constexpr auto log256 = std::log(256);
 
 namespace baseN
 {
-    void digitsMap(const char *digits, uint8_t digits_size, int8_t *map)
+    void digitsMap(const char *digits, uint8_t digits_size, uint8_t *map)
     {
-        std::fill(map, map + 256, -1);
+        std::fill(map, map + 256, 255);
         for (uint8_t i = 0; i < digits_size; i++)
         {
-            if (map[(int8_t)digits[i]] != -1)
+            if (map[(uint8_t)digits[i]] != 255)
             {
                 throw std::logic_error("baseN::digitsMap: alphabet contain same chars");
             }
-            map[(int8_t)digits[i]] = i;
+            map[(uint8_t)digits[i]] = i;
         }
     }
-    bool isValid(const char *str, size_t str_size, const int8_t *map) noexcept
+    bool isValid(const char *str, size_t str_size, const uint8_t *map) noexcept
     {
         return std::all_of(str, str + str_size, [map](char ch)
-                           { return map[(int8_t)ch] != -1; });
+                           { return map[(uint8_t)ch] != 255; });
     }
-    bool isValid(std::string_view str, const int8_t *map) noexcept
+    bool isValid(std::string_view str, const uint8_t *map) noexcept
     {
         return baseN::isValid(str.data(), str.size(), map);
     }
@@ -99,7 +99,7 @@ namespace baseN
         str.erase(str.begin(), str.begin() + offset);
         return str;
     }
-    size_t decode(const char *str, size_t str_size, uint8_t *data, size_t data_size, uint8_t base, const char *digits, const int8_t *map)
+    size_t decode(const char *str, size_t str_size, uint8_t *data, size_t data_size, uint8_t base, const char *digits, const uint8_t *map)
     {
         std::string_view sv(std::find_if(str, str + str_size, [digits](char ch)
                                          { return ch != digits[0]; }),
@@ -117,10 +117,10 @@ namespace baseN
         if (sv.size() != 0)
         {
             quo_it_last++;
-            *quo_it = map[(int8_t)*sv_it++];
+            *quo_it = map[(uint8_t)*sv_it++];
             while (sv_it < sv.end())
             {
-                div = map[(int8_t)*sv_it++];
+                div = map[(uint8_t)*sv_it++];
                 while (quo_it < quo_it_last && quo_it < dv.rend())
                 {
                     div += *quo_it * base;
@@ -141,7 +141,7 @@ namespace baseN
         }
         return std::distance(quo_it_last, dv.rend());
     }
-    std::vector<uint8_t> decode(std::string_view str, uint8_t base, const char *digits, const int8_t *map) noexcept
+    std::vector<uint8_t> decode(std::string_view str, uint8_t base, const char *digits, const uint8_t *map) noexcept
     {
         std::vector<uint8_t> data(baseN::sizeDecoded(str, base, digits));
         size_t offset = baseN::decode(str.data(), str.size(), data.data(), data.size(), base, digits, map);

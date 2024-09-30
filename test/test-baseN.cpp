@@ -9,7 +9,7 @@ using namespace baseN;
 
 TEST(baseN, digitsMap)
 {
-    int8_t map[256];
+    uint8_t map[256];
     digitsMap(base58::digits, 58, map);
     EXPECT_TRUE(std::equal(map, map + 256, base58::map));
 
