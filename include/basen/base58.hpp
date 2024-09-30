@@ -13,27 +13,27 @@ namespace base58
     extern const char digits[59];
     extern const int8_t map[256];
 
-    bool isValid(const char *str, uint64_t str_size) noexcept;
+    bool isValid(const char *str, size_t str_size) noexcept;
     bool isValid(std::string_view str) noexcept;
 
     /**
      * @throw std::overflow_error if if there is an overflow
      */
-    uint64_t sizeEncoded(std::span<const uint8_t> data) noexcept;
-    uint64_t sizeDecoded(std::string_view str) noexcept;
+    size_t sizeEncoded(std::span<const uint8_t> data) noexcept;
+    size_t sizeDecoded(std::string_view str) noexcept;
 
     /**
      * @return number of leading chars, which should be trimmed
      * @warning contain leading zeros, returns count of them
      */
-    uint64_t encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size) noexcept;
+    size_t encode(const uint8_t *data, size_t data_size, char *str, size_t str_size) noexcept;
     std::string encode(std::span<const uint8_t> data) noexcept;
 
     /**
      * @return number of leading chars, which should be trimmed
      * @warning contain leading zeros, returns count of them
      */
-    uint64_t decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size) noexcept;
+    size_t decode(const char *str, size_t str_size, uint8_t *data, size_t data_size) noexcept;
     std::vector<uint8_t> decode(std::string_view str) noexcept;
 
     /**

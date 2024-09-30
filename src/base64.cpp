@@ -28,7 +28,7 @@ namespace base64
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         //
     };
-    bool isValid(const char *str, uint64_t str_size) noexcept
+    bool isValid(const char *str, size_t str_size) noexcept
     {
         return base64::isValid(std::string_view(str, str_size));
     }
@@ -43,37 +43,37 @@ namespace base64
         }
         return baseN::isValid(sv, map);
     }
-    uint64_t sizeEncoded(std::span<const uint8_t> data)
+    size_t sizeEncoded(std::span<const uint8_t> data)
     {
-        uint64_t str_size = data.size() / 3;
-        if (str_size > std::numeric_limits<uint64_t>::max() / 4)
+        size_t str_size = data.size() / 3;
+        if (str_size > std::numeric_limits<size_t>::max() / 4)
         {
             throw std::overflow_error("base64::sizeEncoded: overflow");
         }
         str_size = str_size * 4 + (data.size() % 3 ? 4 : 0);
         return str_size;
     }
-    uint64_t sizeDecoded(std::string_view str) noexcept
+    size_t sizeDecoded(std::string_view str) noexcept
     {
         auto size = std::distance(str.begin(), std::find_if(str.rbegin(), str.rend(), [](char ch)
                                                             { return ch != '='; })
                                                    .base());
         return size / 4 * 3 + (size % 4 ? size % 4 - 1 : 0);
     }
-    void encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size)
+    void encode(const uint8_t *data, size_t data_size, char *str, size_t str_size)
     {
         if (str_size < base64::sizeEncoded(std::span<const uint8_t>(data, data_size)))
         {
             throw std::length_error("base64::encode: not enough allocated length");
         }
-        for (uint64_t i = 0; i < data_size / 3; i++)
+        for (size_t i = 0; i < data_size / 3; i++)
         {
             str[i * 4] = digits[data[i * 3] >> 2];
             str[i * 4 + 1] = digits[(data[i * 3] << 4 | data[i * 3 + 1] >> 4) & 0x3F];
             str[i * 4 + 2] = digits[(data[i * 3 + 1] << 2 | data[i * 3 + 2] >> 6) & 0x3F];
             str[i * 4 + 3] = digits[data[i * 3 + 2] & 0x3F];
         }
-        uint64_t last_idx = data_size / 3 * 4;
+        size_t last_idx = data_size / 3 * 4;
         switch (data_size % 3)
         {
         case 1:
@@ -98,7 +98,7 @@ namespace base64
         base64::encode(data.data(), data.size(), str.data(), str.size());
         return str;
     }
-    void decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size)
+    void decode(const char *str, size_t str_size, uint8_t *data, size_t data_size)
     {
         std::string_view sv(str, str_size);
         if (data_size < base64::sizeDecoded(sv))
@@ -122,7 +122,7 @@ namespace base64
             data[i * 3 + 1] = map[(int8_t)str[i * 4 + 1]] << 4 | map[(int8_t)str[i * 4 + 2]] >> 2;
             data[i * 3 + 2] = map[(int8_t)str[i * 4 + 2]] << 6 | map[(int8_t)str[i * 4 + 3]];
         }
-        uint64_t last_idx = size / 4 * 3;
+        size_t last_idx = size / 4 * 3;
         switch (size % 4)
         {
         case 2:

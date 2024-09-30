@@ -20,7 +20,7 @@ TEST(hex, encode)
     EXPECT_EQ("74657374", encode(data));
 
     std::string str = "";
-    EXPECT_THROW(encode(data.data(), std::numeric_limits<uint64_t>::max(), str.data(), str.size()), std::overflow_error);
+    EXPECT_THROW(encode(data.data(), std::numeric_limits<size_t>::max(), str.data(), str.size()), std::overflow_error);
     EXPECT_THROW(encode(data.data(), data.size(), str.data(), str.size()), std::length_error);
     EXPECT_NO_THROW(encode(data.data(), 0, str.data(), str.size()));
 }

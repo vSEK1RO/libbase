@@ -21,7 +21,7 @@ namespace baseN
             map[(int8_t)digits[i]] = i;
         }
     }
-    bool isValid(const char *str, uint64_t str_size, const int8_t *map) noexcept
+    bool isValid(const char *str, size_t str_size, const int8_t *map) noexcept
     {
         return std::all_of(str, str + str_size, [map](char ch)
                            { return map[(int8_t)ch] != -1; });
@@ -30,25 +30,25 @@ namespace baseN
     {
         return baseN::isValid(str.data(), str.size(), map);
     }
-    uint64_t sizeEncoded(std::span<const uint8_t> data, uint8_t base)
+    size_t sizeEncoded(std::span<const uint8_t> data, uint8_t base)
     {
         std::span<const uint8_t> dv(std::find_if(data.begin(), data.end(), [](uint8_t item)
                                                  { return item != 0; }),
                                     data.end());
-        if (dv.size() > std::numeric_limits<uint64_t>::max() / log256)
+        if (dv.size() > std::numeric_limits<size_t>::max() / log256)
         {
             throw std::overflow_error("baseN::sizeEncoded: overflow");
         }
         return dv.size() * log256 / std::log(base) + 1 + (data.size() - dv.size());
     }
-    uint64_t sizeDecoded(std::string_view str, uint8_t base, const char *digits) noexcept
+    size_t sizeDecoded(std::string_view str, uint8_t base, const char *digits) noexcept
     {
         std::string_view sv(std::find_if(str.begin(), str.end(), [digits](uint8_t ch)
                                          { return ch != digits[0]; }),
                             str.end());
         return sv.size() * std::log(base) / log256 + 1 + (str.size() - sv.size());
     }
-    uint64_t encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size, uint8_t base, const char *digits)
+    size_t encode(const uint8_t *data, size_t data_size, char *str, size_t str_size, uint8_t base, const char *digits)
     {
         std::vector<uint8_t> dv(std::find_if(data, data + data_size, [](uint8_t item)
                                              { return item != 0; }),
@@ -86,7 +86,7 @@ namespace baseN
             }
             *sv_it++ = digits[div];
         }
-        for (uint64_t i = 0; i < data_size - dv.size() && sv_it < sv.rend(); i++)
+        for (size_t i = 0; i < data_size - dv.size() && sv_it < sv.rend(); i++)
         {
             *sv_it++ = digits[0];
         }
@@ -95,11 +95,11 @@ namespace baseN
     std::string encode(std::span<const uint8_t> data, uint8_t base, const char *digits) noexcept
     {
         std::string str(baseN::sizeEncoded(data, base), ' ');
-        uint64_t offset = baseN::encode(data.data(), data.size(), str.data(), str.size(), base, digits);
+        size_t offset = baseN::encode(data.data(), data.size(), str.data(), str.size(), base, digits);
         str.erase(str.begin(), str.begin() + offset);
         return str;
     }
-    uint64_t decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size, uint8_t base, const char *digits, const int8_t *map)
+    size_t decode(const char *str, size_t str_size, uint8_t *data, size_t data_size, uint8_t base, const char *digits, const int8_t *map)
     {
         std::string_view sv(std::find_if(str, str + str_size, [digits](char ch)
                                          { return ch != digits[0]; }),
@@ -135,7 +135,7 @@ namespace baseN
                 quo_it = dv.rbegin();
             }
         }
-        for (uint64_t i = 0; i < str_size - sv.size() && quo_it_last < dv.rend(); i++)
+        for (size_t i = 0; i < str_size - sv.size() && quo_it_last < dv.rend(); i++)
         {
             *quo_it_last++ = 0;
         }
@@ -144,7 +144,7 @@ namespace baseN
     std::vector<uint8_t> decode(std::string_view str, uint8_t base, const char *digits, const int8_t *map) noexcept
     {
         std::vector<uint8_t> data(baseN::sizeDecoded(str, base, digits));
-        uint64_t offset = baseN::decode(str.data(), str.size(), data.data(), data.size(), base, digits, map);
+        size_t offset = baseN::decode(str.data(), str.size(), data.data(), data.size(), base, digits, map);
         data.erase(data.begin(), data.begin() + offset);
         return data;
     }

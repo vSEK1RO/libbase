@@ -27,7 +27,7 @@ namespace base58
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         //
     };
-    bool isValid(const char *str, uint64_t str_size) noexcept
+    bool isValid(const char *str, size_t str_size) noexcept
     {
         return baseN::isValid(str, str_size, map);
     }
@@ -35,15 +35,15 @@ namespace base58
     {
         return baseN::isValid(str, map);
     }
-    uint64_t sizeEncoded(std::span<const uint8_t> data) noexcept
+    size_t sizeEncoded(std::span<const uint8_t> data) noexcept
     {
         return baseN::sizeEncoded(data, 58);
     }
-    uint64_t sizeDecoded(std::string_view str) noexcept
+    size_t sizeDecoded(std::string_view str) noexcept
     {
         return baseN::sizeDecoded(str, 58, digits);
     }
-    uint64_t encode(const uint8_t *data, uint64_t data_size, char *str, uint64_t str_size) noexcept
+    size_t encode(const uint8_t *data, size_t data_size, char *str, size_t str_size) noexcept
     {
         return baseN::encode(data, data_size, str, str_size, 58, digits);
     }
@@ -51,7 +51,7 @@ namespace base58
     {
         return baseN::encode(data, 58, digits);
     }
-    uint64_t decode(const char *str, uint64_t str_size, uint8_t *data, uint64_t data_size) noexcept
+    size_t decode(const char *str, size_t str_size, uint8_t *data, size_t data_size) noexcept
     {
         return baseN::decode(str, str_size, data, data_size, 58, digits, map);
     }
